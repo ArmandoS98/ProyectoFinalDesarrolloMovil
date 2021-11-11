@@ -6,6 +6,8 @@ import android.preference.PreferenceManager
 
 enum class PreferencesKey(val value: String) {
     AUTH_TOKEN_USER("authUser"),
+    AUTH_EMAIL_USER("emialUser"),
+    AUTH_PROVIDER_USER("providerUser"),
 }
 
 object PreferencesProvider {

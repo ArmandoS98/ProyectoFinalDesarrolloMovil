@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         //Firebase Auth
 //        auth = Firebase.auth
 
+
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
@@ -47,15 +48,17 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-//        validateCurrentUser()
-
+        validateCurrentUser()
 
     }
 
 
     private fun validateCurrentUser() {
-        val currentTokenUser = PreferencesProvider.string(this, PreferencesKey.AUTH_TOKEN_USER)
-        if (currentTokenUser.isNullOrEmpty())
+        val currentEmailUser: String? =
+            PreferencesProvider.string(this, PreferencesKey.AUTH_EMAIL_USER)
+        val currentProviderUser: String? =
+            PreferencesProvider.string(this, PreferencesKey.AUTH_PROVIDER_USER)
+        if (currentEmailUser == null && currentProviderUser == null)
             goToActivity<LoginActivity>()
     }
 }
