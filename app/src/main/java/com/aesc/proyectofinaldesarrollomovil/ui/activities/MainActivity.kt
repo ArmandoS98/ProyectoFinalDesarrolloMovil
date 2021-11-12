@@ -1,8 +1,6 @@
 package com.aesc.proyectofinaldesarrollomovil.ui.activities
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -14,15 +12,16 @@ import com.aesc.proyectofinaldesarrollomovil.databinding.ActivityMainBinding
 import com.aesc.proyectofinaldesarrollomovil.extension.goToActivity
 import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesKey
 import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesProvider
-import com.aesc.proyectofinaldesarrollomovil.ui.activities.login.LoginActivity
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-//    private lateinit var auth: FirebaseAuth
+    private lateinit var auth: FirebaseAuth
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,8 +31,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //Firebase Auth
-//        auth = Firebase.auth
-
+        auth = Firebase.auth
 
         val navView: BottomNavigationView = binding.navView
 
@@ -48,10 +46,33 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        validateCurrentUser()
+//        validateCurrentUser()
 
     }
 
+    override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = auth.currentUser
+        updateUI(currentUser)
+    }
+
+    private fun updateUI(currentUser: FirebaseUser?) {
+        if (currentUser == null)
+            goToActivity<LoginActivity>()
+        else {
+            val user = auth.currentUser
+            user?.let {
+                val name = user.displayName
+                val email = user.email
+                val photoUrl = user.photoUrl
+                val emailVerified = user.isEmailVerified
+                val uid = user.uid
+
+                Utils.logsUtils("Name: $name\nEmail: $email\nPhoto: $photoUrl\nEmail Verified: $emailVerified\nUid: $uid")
+            }
+        }
+    }
 
     private fun validateCurrentUser() {
         val currentEmailUser: String? =
