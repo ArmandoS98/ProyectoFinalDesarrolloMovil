@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.aesc.proyectofinaldesarrollomovil.R
 import com.aesc.proyectofinaldesarrollomovil.databinding.ActivityLoginBinding
 import com.aesc.proyectofinaldesarrollomovil.extension.goToActivity
+import com.aesc.proyectofinaldesarrollomovil.provider.firebase.daos.UserDao
+import com.aesc.proyectofinaldesarrollomovil.provider.firebase.models.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -112,7 +114,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             }
     }
 
-    private fun updateUI(user: FirebaseUser?) {
-        goToActivity<MainActivity>()
+    private fun updateUI(firebaseUser: FirebaseUser?) {
+        if (firebaseUser != null) {
+            val user =
+                User(firebaseUser.uid, firebaseUser.displayName!!, firebaseUser.photoUrl.toString())
+            val usersDao = UserDao()
+            usersDao.addUser(user)
+            goToActivity<MainActivity>()
+        }
     }
 }

@@ -32,4 +32,7 @@
     <string name="nav_mapa">Mapa</string>
     <string name="nav_historial">Historial</string>
     <string name="nav_perfil">Perfil</string>
+    <string name="nombre_de_la_localizacion">Nombre de la localizacion</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="enviar">Enviar</string>
 </resources>

@@ -13,12 +13,18 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.aesc.proyectofinaldesarrollomovil.R
+import com.aesc.proyectofinaldesarrollomovil.provider.firebase.daos.LocationDao
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
+
 
 class MapsFragment : Fragment(), OnMapReadyCallback,
     GoogleMap.OnMyLocationClickListener {
@@ -29,6 +35,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
 
     private lateinit var viewModel: MapsViewModel
     private lateinit var map: GoogleMap
+    private lateinit var locationDao: LocationDao
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -130,6 +137,42 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
     }
 
     override fun onMyLocationClick(currentLocation: Location) {
-        Toast.makeText(context, "Estás en ${currentLocation.latitude}, ${currentLocation.longitude}", Toast.LENGTH_SHORT).show()
+        showBottomSheetDialog(currentLocation)
+    }
+
+    private fun showBottomSheetDialog(currentLocation: Location) {
+
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout)
+
+        val name = bottomSheetDialog.findViewById<TextInputEditText>(R.id.tieNameOfLocation)
+        val cancel = bottomSheetDialog.findViewById<MaterialButton>(R.id.btnCancel)
+        val send = bottomSheetDialog.findViewById<MaterialButton>(R.id.btnSend)
+
+        cancel!!.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        send!!.setOnClickListener {
+            locationDao = LocationDao()
+
+            currentLocation.let {
+                val nameLocation = name!!.text.toString()
+                locationDao.addLocation(
+                    currentLocation.latitude,
+                    currentLocation.longitude,
+                    nameLocation
+                )
+            }
+
+            bottomSheetDialog.dismiss()
+
+            Toast.makeText(
+                context,
+                "Informacion Almacenada",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        bottomSheetDialog.show()
     }
 }
