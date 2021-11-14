@@ -18,6 +18,13 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.QuerySnapshot
+
+import androidx.annotation.NonNull
+import com.aesc.proyectofinaldesarrollomovil.extension.goToActivityF
+
+import com.google.android.gms.tasks.OnCompleteListener
+
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private val TAG: String = "LoginActivity"
@@ -35,6 +42,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         binding.signInAppCompatButton.setOnClickListener(this)
         binding.sibFirebaseGoogle.setOnClickListener(this)
+        binding.btnCreateNewAccount.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -55,6 +63,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     .build()
 
                 signIn()
+            }
+            R.id.btnCreateNewAccount -> {
+                goToActivity<SignInActivity>()
             }
         }
     }
@@ -80,8 +91,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential: AuthCredential =
-            GoogleAuthProvider.getCredential(idToken, null)
+        val credential: AuthCredential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -116,11 +126,30 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun updateUI(firebaseUser: FirebaseUser?) {
         if (firebaseUser != null) {
-            val user =
-                User(firebaseUser.uid, firebaseUser.displayName!!, firebaseUser.photoUrl.toString())
             val usersDao = UserDao()
-            usersDao.addUser(user)
-            goToActivity<MainActivity>()
+
+            usersDao.userCollection.whereEqualTo("uid", firebaseUser.uid)
+                .limit(1).get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val reslut = task.result.isEmpty
+                        if (reslut) {
+                            //Add new user
+                            val user = User(
+                                firebaseUser.uid,
+                                firebaseUser.displayName!!,
+                                firebaseUser.photoUrl.toString(),
+                                firebaseUser.email!!
+                            )
+                            usersDao.addUser(user)
+                            goToActivityF<MainActivity>()
+                        } else {
+                            //User Exists Previously
+                            goToActivityF<MainActivity>()
+                        }
+                    }
+                }
         }
+
     }
 }

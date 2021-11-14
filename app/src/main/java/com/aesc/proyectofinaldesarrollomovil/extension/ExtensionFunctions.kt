@@ -9,12 +9,12 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.aesc.proyectofinaldesarrollomovil.R
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 
@@ -31,6 +31,14 @@ fun View.snack(
     snack.show()
 }
 
+fun ImageView.loadByURL(url: String) = Glide.with(this)
+    .load(url)
+    .placeholder(R.drawable.ice_person_24)
+    .error(R.drawable.ice_person_24)
+    .fallback(R.drawable.ice_person_24)
+    .into(this)
+
+
 fun Snackbar.action(actionRes: Int, color: Int? = null, listener: (View) -> Unit) {
     action(view.resources.getString(actionRes), color, listener)
 }
@@ -40,11 +48,19 @@ fun Snackbar.action(action: String, color: Int? = null, listener: (View) -> Unit
     color?.let { setActionTextColor(ContextCompat.getColor(context, color)) }
 }
 
+inline fun <reified T : Activity> Activity.goToActivityF(noinline init: Intent.() -> Unit = {}) {
+    val intent = Intent(this, T::class.java)
+    intent.init()
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    startActivity(intent)
+    finish()
+}
+
 inline fun <reified T : Activity> Activity.goToActivity(noinline init: Intent.() -> Unit = {}) {
     val intent = Intent(this, T::class.java)
     intent.init()
     startActivity(intent)
-    finish()
 }
 
 fun Fragment.hideKeyboard() {

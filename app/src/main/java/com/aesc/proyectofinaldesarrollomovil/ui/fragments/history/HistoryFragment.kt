@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,10 +43,8 @@ class HistoryFragment : Fragment() {
         locationDao = LocationDao()
         val locationCollections = locationDao.locationCollection
         val query = locationCollections.orderBy("createdAt", Query.Direction.DESCENDING)
-        val recyclerViewOtions =
-            FirestoreRecyclerOptions.Builder<Locations>().setQuery(query, Locations::class.java)
-                .build()
-        adapter = LocationAdapter(recyclerViewOtions)
+        val recyclerViewOtions = FirestoreRecyclerOptions.Builder<Locations>().setQuery(query, Locations::class.java).build()
+        adapter = LocationAdapter(recyclerViewOtions, locationDao)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }

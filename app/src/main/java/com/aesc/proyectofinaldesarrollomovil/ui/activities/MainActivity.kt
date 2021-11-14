@@ -10,6 +10,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.aesc.proyectofinaldesarrollomovil.R
 import com.aesc.proyectofinaldesarrollomovil.databinding.ActivityMainBinding
 import com.aesc.proyectofinaldesarrollomovil.extension.goToActivity
+import com.aesc.proyectofinaldesarrollomovil.extension.goToActivityF
 import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesKey
 import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesProvider
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils
@@ -57,27 +58,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUI(currentUser: FirebaseUser?) {
         if (currentUser == null)
-            goToActivity<LoginActivity>()
+            goToActivityF<LoginActivity>()
         else {
             val user = auth.currentUser
-            user?.let {
-                val name = user.displayName
-                val email = user.email
-                val photoUrl = user.photoUrl
-                val emailVerified = user.isEmailVerified
-                val uid = user.uid
+            if (!user!!.isEmailVerified)
+                goToActivityF<CheckEmailActivity>()
+            else {
+                user.let {
+                    val name = user.displayName
+                    val email = user.email
+                    val photoUrl = user.photoUrl
+                    val emailVerified = user.isEmailVerified
+                    val uid = user.uid
 
-                Utils.logsUtils("Name: $name\nEmail: $email\nPhoto: $photoUrl\nEmail Verified: $emailVerified\nUid: $uid")
+                    Utils.logsUtils("Name: $name\nEmail: $email\nPhoto: $photoUrl\nEmail Verified: $emailVerified\nUid: $uid")
+                }
             }
         }
-    }
-
-    private fun validateCurrentUser() {
-        val currentEmailUser: String? =
-            PreferencesProvider.string(this, PreferencesKey.AUTH_EMAIL_USER)
-        val currentProviderUser: String? =
-            PreferencesProvider.string(this, PreferencesKey.AUTH_PROVIDER_USER)
-        if (currentEmailUser == null && currentProviderUser == null)
-            goToActivity<LoginActivity>()
     }
 }

@@ -9,6 +9,7 @@
     <string name="login">Login</string>
     <string name="repeat_password">Confirma la contraseña</string>
     <string name="signup">Sign Up</string>
+    <string name="signup_with_others">o Iniciar Sesion con</string>
     <string name="text_signup">No tienes cuenta?</string>
     <string name="link_signup">Sign up</string>
     <string name="all">TODO</string>
@@ -35,4 +36,16 @@
     <string name="nombre_de_la_localizacion">Nombre de la localizacion</string>
     <string name="cancelar">Cancelar</string>
     <string name="enviar">Enviar</string>
+    <string name="enter_password">Ingresar Contraseña</string>
+    <string name="enter_confirm_password">Confirmar Contraseña</string>
+    <string name="enter_phone_number">Ingresar Correo</string>
+    <string name="remember_me">Recordarme</string>
+    <string name="create_new_account">Crear Nueva Cuenta</string>
+    <string name="ingresar_nombre_de_usuario">Ingresar Username</string>
+    <string name="nombre_de_usuario">Username</string>
+    <string name="crear">Crear</string>
+    <string name="registro">Registro</string>
+    <string name="logout">Logout</string>
+    <string name="actualizar">Actualizar</string>
+    <string name="title_activity_check_email">CheckEmailActivity</string>
 </resources>

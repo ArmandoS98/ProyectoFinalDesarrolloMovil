@@ -7,13 +7,20 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.aesc.proyectofinaldesarrollomovil.R
+import com.aesc.proyectofinaldesarrollomovil.extension.loadByURL
+import com.aesc.proyectofinaldesarrollomovil.provider.firebase.daos.LocationDao
+import com.aesc.proyectofinaldesarrollomovil.provider.firebase.daos.UserDao
 import com.aesc.proyectofinaldesarrollomovil.provider.firebase.models.Locations
+import com.aesc.proyectofinaldesarrollomovil.provider.firebase.models.User
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
-class LocationAdapter(options: FirestoreRecyclerOptions<Locations>) :
+class LocationAdapter(options: FirestoreRecyclerOptions<Locations>, val locationDao: LocationDao) :
     FirestoreRecyclerAdapter<Locations, LocationAdapter.PostViewHolder>(
         options
     ) {
@@ -34,13 +41,11 @@ class LocationAdapter(options: FirestoreRecyclerOptions<Locations>) :
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int, model: Locations) {
-        val texto =
-            "Location's name: ${model.userText}\nLatitud: ${model.latitude}\nLongitud: ${model.longitude}"
+
+        val texto = "Location name: ${model.userText}\nLatitud: ${model.latitude}\nLongitud: ${model.longitude}"
         holder.postText.text = texto
         holder.userText.text = model.createdBy.displayName
-        Glide.with(holder.userImage.context).load(model.createdBy.imageUrl).circleCrop()
-            .into(holder.userImage)
-//        holder.likeCount.text = model.likedBy.size.toString()
+        holder.userImage.loadByURL(model.createdBy.imageUrl)
         holder.createdAt.text = Utils.getTimeAgo(model.createdAt)
     }
 }

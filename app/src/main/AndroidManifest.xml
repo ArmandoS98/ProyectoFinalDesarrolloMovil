@@ -13,16 +13,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ProyectoFinalDesarrolloMovil">
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".ui.activities.LoginActivity"
+            android:name=".ui.activities.CheckEmailActivity"
+            android:exported="true"
+            android:label="@string/title_activity_check_email"
+            android:theme="@style/Theme.ProyectoFinalDesarrolloMovil.NoActionBar" />
+
+        <activity
+            android:name=".ui.activities.SignInActivity"
             android:exported="true"
             android:theme="@style/Theme.ProyectoFinalDesarrolloMovil.NoActionBar" />
 
+        <activity
+            android:name=".ui.activities.LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ProyectoFinalDesarrolloMovil.NoActionBar" />
         <activity
             android:name=".ui.activities.MainActivity"
             android:exported="true"
