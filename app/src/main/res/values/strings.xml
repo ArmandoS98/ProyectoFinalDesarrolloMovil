@@ -50,4 +50,6 @@
     <string name="title_activity_check_email">CheckEmailActivity</string>
     <string name="eliminar">Eliminar</string>
     <string name="compartir">Compartir</string>
+    <string name="about_us">About us</string>
+    <string name="volver">Volver</string>
 </resources>

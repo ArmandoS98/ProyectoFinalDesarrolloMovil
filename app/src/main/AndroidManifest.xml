@@ -19,15 +19,18 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:name=".ui.activities.AboutUsActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ProyectoFinalDesarrolloMovil.NoActionBar"/>
+
+        <activity
             android:name=".ui.activities.DeleteAccountActivity"
             android:exported="true"
             android:theme="@style/Theme.ProyectoFinalDesarrolloMovil.NoActionBar" />
-
         <activity
             android:name=".ui.activities.UpdatePasswordActivity"
             android:exported="true"
             android:theme="@style/Theme.ProyectoFinalDesarrolloMovil.NoActionBar" />
-
         <activity
             android:name=".ui.activities.AccountRecoveryActivity"
             android:exported="true"
