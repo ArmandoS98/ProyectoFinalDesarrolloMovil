@@ -28,4 +28,8 @@ class LocationDao {
             locationCollection.document().set(location)
         }
     }
+
+    fun deleteLocation(idLocation: String) {
+        locationCollection.document(idLocation).delete()
+    }
 }

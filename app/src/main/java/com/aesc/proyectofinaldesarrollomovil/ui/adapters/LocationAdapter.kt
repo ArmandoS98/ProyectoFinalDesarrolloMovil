@@ -1,10 +1,14 @@
 package com.aesc.proyectofinaldesarrollomovil.ui.adapters
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.motion.widget.Key.VISIBILITY
 import androidx.recyclerview.widget.RecyclerView
 import com.aesc.proyectofinaldesarrollomovil.R
 import com.aesc.proyectofinaldesarrollomovil.extension.loadByURL
@@ -16,11 +20,13 @@ import com.aesc.proyectofinaldesarrollomovil.utils.Utils
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class LocationAdapter(options: FirestoreRecyclerOptions<Locations>, val locationDao: LocationDao) :
+class LocationAdapter(options: FirestoreRecyclerOptions<Locations>, val listener: IPostAdapter) :
     FirestoreRecyclerAdapter<Locations, LocationAdapter.PostViewHolder>(
         options
     ) {
@@ -28,24 +34,49 @@ class LocationAdapter(options: FirestoreRecyclerOptions<Locations>, val location
         val postText: TextView = itemView.findViewById(R.id.postTitle)
         val userText: TextView = itemView.findViewById(R.id.userName)
         val createdAt: TextView = itemView.findViewById(R.id.createdAt)
-        val likeCount: TextView = itemView.findViewById(R.id.likeCount)
+        val share: TextView = itemView.findViewById(R.id.btnShareData)
+        val delete: TextView = itemView.findViewById(R.id.btnDeleteData)
         val userImage: ImageView = itemView.findViewById(R.id.userImage)
-        val likeButton: ImageView = itemView.findViewById(R.id.likeButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        return PostViewHolder(
+        val viewHolder = PostViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_location_history, parent, false)
         )
+
+        viewHolder.share.setOnClickListener {
+            listener.onShareClicked(
+                snapshots.getSnapshot(viewHolder.adapterPosition).data?.get("latitude")
+                    ?.toString()!!,
+                snapshots.getSnapshot(viewHolder.adapterPosition).data!!["longitude"].toString()
+            )
+        }
+        viewHolder.delete.setOnClickListener {
+            listener.onDeleteClicked(
+                snapshots.getSnapshot(viewHolder.adapterPosition).id
+            )
+        }
+        return viewHolder
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int, model: Locations) {
 
-        val texto = "Location name: ${model.userText}\nLatitud: ${model.latitude}\nLongitud: ${model.longitude}"
+        val texto =
+            "Location name: ${model.userText}\nLatitud: ${model.latitude}\nLongitud: ${model.longitude}"
         holder.postText.text = texto
         holder.userText.text = model.createdBy.displayName
         holder.userImage.loadByURL(model.createdBy.imageUrl)
         holder.createdAt.text = Utils.getTimeAgo(model.createdAt)
+
+        val auth = Firebase.auth
+        val currentUserId = auth.currentUser!!.uid
+        val isMine = model.createdBy.uid.contains(currentUserId)
+        if (isMine) holder.delete.visibility = VISIBLE else holder.delete.visibility = GONE
     }
+}
+
+interface IPostAdapter {
+    fun onShareClicked(latitude: String, longitude: String)
+    fun onDeleteClicked(id: String)
 }

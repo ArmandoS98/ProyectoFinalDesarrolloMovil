@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class UserDao {
     private val db = FirebaseFirestore.getInstance()
@@ -22,5 +23,11 @@ class UserDao {
 
     fun getUserByid(uId: String): Task<DocumentSnapshot> {
         return userCollection.document(uId).get()
+    }
+
+    fun updateUserInfo(user: User?) {
+        GlobalScope.launch(Dispatchers.IO) {
+            userCollection.document(user!!.uid).set(user)
+        }
     }
 }

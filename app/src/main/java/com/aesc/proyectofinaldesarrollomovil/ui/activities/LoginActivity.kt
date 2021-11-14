@@ -43,6 +43,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         binding.signInAppCompatButton.setOnClickListener(this)
         binding.sibFirebaseGoogle.setOnClickListener(this)
         binding.btnCreateNewAccount.setOnClickListener(this)
+        binding.tvForgotPassword.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -66,6 +67,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             }
             R.id.btnCreateNewAccount -> {
                 goToActivity<SignInActivity>()
+            }
+            R.id.tvForgotPassword -> {
+                goToActivity<AccountRecoveryActivity>()
             }
         }
     }

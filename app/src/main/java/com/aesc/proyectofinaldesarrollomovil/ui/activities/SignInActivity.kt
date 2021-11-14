@@ -80,11 +80,6 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        val currentUser = auth.currentUser
-    }
-
     private fun createAccount(
         username: String,
         useremail: String,

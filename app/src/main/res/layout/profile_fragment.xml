@@ -18,8 +18,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userImage"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_marginStart="32dp"
             android:src="@drawable/ice_person_24"
             app:civ_border_color="#FF000000"
@@ -40,6 +40,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/userImage"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="78dp"
+            android:layout_marginTop="73dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_baseline_add_24"
+            app:layout_constraintStart_toStartOf="@+id/userImage"
+            app:layout_constraintTop_toTopOf="@+id/userImage" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -76,64 +88,38 @@
                 android:inputType="text"
                 android:textColor="@color/black"
                 android:textCursorDrawable="@null" />
-        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/login_phone_number"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tilUserName"
-            android:layout_marginTop="10dp"
-            android:hint="@string/email"
-            android:textColorHint="@color/black"
-            app:boxStrokeColor="@color/black"
-            app:boxStrokeWidthFocused="2dp"
-            app:endIconMode="clear_text"
-            app:endIconTint="@color/black"
-            app:hintTextColor="@color/black"
-            app:startIconDrawable="@drawable/ice_person_24"
-            app:startIconTint="@color/black">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/tieEmail"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:ems="10"
-                android:inputType="textEmailAddress"
-                android:textColor="@color/black"
-                android:textCursorDrawable="@null" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvUpdatePassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="@string/change_password" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tvDeleteAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="@string/delete_account" />
+            </LinearLayout>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/login_password"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/login_phone_number"
-            android:layout_marginTop="10dp"
-            android:hint="@string/password"
-            android:textColorHint="@color/black"
-            app:boxStrokeColor="@color/black"
-            app:boxStrokeWidthFocused="2dp"
-            app:endIconMode="password_toggle"
-            app:endIconTint="@color/black"
-            app:hintTextColor="@color/black"
-            app:startIconDrawable="@drawable/ic_lock_24"
-            app:startIconTint="@color/black">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/tiePassword"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:inputType="textPassword"
-                android:textColor="@color/black" />
-        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/login_password"
+            android:layout_below="@id/tilUserName"
             android:layout_marginTop="20dp"
             android:orientation="horizontal"
             android:weightSum="2">
