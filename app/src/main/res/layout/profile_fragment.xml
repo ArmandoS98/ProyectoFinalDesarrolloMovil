@@ -108,7 +108,8 @@
                 android:layout_weight="1"
                 android:backgroundTint="@android:color/holo_red_dark"
                 android:text="@string/logout"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                app:cornerRadius="15dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnActualizar"
@@ -119,6 +120,7 @@
                 android:backgroundTint="@color/purple_500"
                 android:text="@string/actualizar"
                 android:textColor="@color/white"
+                app:cornerRadius="15dp"
                 app:strokeColor="@color/purple_500"
                 app:strokeWidth="10dp" />
         </LinearLayout>

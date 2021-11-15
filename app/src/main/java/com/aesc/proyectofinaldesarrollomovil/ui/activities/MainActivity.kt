@@ -1,7 +1,6 @@
 package com.aesc.proyectofinaldesarrollomovil.ui.activities
 
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -9,11 +8,11 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.aesc.proyectofinaldesarrollomovil.R
 import com.aesc.proyectofinaldesarrollomovil.databinding.ActivityMainBinding
-import com.aesc.proyectofinaldesarrollomovil.extension.goToActivity
 import com.aesc.proyectofinaldesarrollomovil.extension.goToActivityF
 import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesKey
 import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesProvider
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -57,7 +56,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateUI(currentUser: FirebaseUser?) {
-        if (currentUser == null)
+        val recordarme = PreferencesProvider.bool(this, PreferencesKey.RECORDARME)
+
+        if (currentUser == null || !recordarme)
             goToActivityF<LoginActivity>()
         else {
             val user = auth.currentUser

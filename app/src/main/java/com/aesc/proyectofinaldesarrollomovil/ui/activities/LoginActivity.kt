@@ -22,6 +22,8 @@ import com.google.firebase.firestore.QuerySnapshot
 
 import androidx.annotation.NonNull
 import com.aesc.proyectofinaldesarrollomovil.extension.goToActivityF
+import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesKey
+import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesProvider
 
 import com.google.android.gms.tasks.OnCompleteListener
 
@@ -102,6 +104,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
+                    PreferencesProvider.set(this, PreferencesKey.RECORDARME, true)
                     updateUI(user)
                 } else {
                     // If sign in fails, display a message to the user.
@@ -118,6 +121,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("MainActivity", "signInWithEmail:success")
                     val user = auth.currentUser
+                    val rememberMe = binding.rememberMe.isChecked
+                    if (rememberMe) {
+                        PreferencesProvider.set(this, PreferencesKey.RECORDARME, rememberMe)
+                    } else {
+                        PreferencesProvider.set(this, PreferencesKey.RECORDARME, rememberMe)
+                    }
                     updateUI(user)
                 } else {
                     // If sign in fails, display a message to the user.
@@ -131,7 +140,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private fun updateUI(firebaseUser: FirebaseUser?) {
         if (firebaseUser != null) {
             val usersDao = UserDao()
-
             usersDao.userCollection.whereEqualTo("uid", firebaseUser.uid)
                 .limit(1).get()
                 .addOnCompleteListener { task ->

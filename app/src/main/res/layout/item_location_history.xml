@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="15dp"
     android:layout_marginTop="15dp"
+    android:layout_marginEnd="15dp"
     android:clickable="true"
-
     android:elevation="5dp"
     android:focusable="true"
     app:cardCornerRadius="10dp"
@@ -16,6 +16,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationView"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/location_item" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userImage"
@@ -30,7 +42,7 @@
             android:id="@+id/userName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="5dp"
             android:textColor="#212121"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -42,8 +54,8 @@
             android:id="@+id/createdAt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="5dp"
+            android:textSize="9sp"
             app:layout_constraintLeft_toRightOf="@id/userImage"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/userName" />
@@ -57,7 +69,7 @@
             android:textSize="16sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/userImage" />
+            app:layout_constraintTop_toBottomOf="@id/animationView" />
 
 
         <LinearLayout
@@ -78,6 +90,7 @@
                 android:backgroundTint="@color/purple_500"
                 android:text="@string/compartir"
                 android:textColor="@color/white"
+                app:cornerRadius="15dp"
                 app:strokeColor="@color/purple_500"
                 app:strokeWidth="10dp" />
 
@@ -90,7 +103,8 @@
                 android:backgroundTint="@android:color/holo_red_dark"
                 android:text="@string/eliminar"
                 android:textColor="@color/white"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:cornerRadius="15dp" />
         </LinearLayout>
 
 

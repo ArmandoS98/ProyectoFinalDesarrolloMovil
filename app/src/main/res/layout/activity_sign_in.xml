@@ -152,6 +152,7 @@
                     android:layout_weight="1"
                     android:backgroundTint="@android:color/holo_red_dark"
                     android:text="@string/cancelar"
+                    app:cornerRadius="15dp"
                     android:textColor="@color/white" />
 
                 <com.google.android.material.button.MaterialButton
@@ -160,6 +161,7 @@
                     android:layout_height="50dp"
                     android:layout_marginStart="5dp"
                     android:layout_weight="1"
+                    app:cornerRadius="15dp"
                     android:backgroundTint="@color/purple_500"
                     android:text="@string/crear"
                     android:textColor="@color/white"
