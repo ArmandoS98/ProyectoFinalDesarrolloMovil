@@ -13,6 +13,7 @@
         <entry key="..\:/AndroidStudioProjects/ProyectoFinalDesarrolloMovil/app/src/main/res/layout/activity_login2.xml" value="0.20520833333333333" />
         <entry key="..\:/AndroidStudioProjects/ProyectoFinalDesarrolloMovil/app/src/main/res/layout/activity_main.xml" value="0.2957427536231884" />
         <entry key="..\:/AndroidStudioProjects/ProyectoFinalDesarrolloMovil/app/src/main/res/layout/activity_sign_in.xml" value="0.3645833333333333" />
+        <entry key="..\:/AndroidStudioProjects/ProyectoFinalDesarrolloMovil/app/src/main/res/layout/activity_splash_screen.xml" value="0.35260416666666666" />
         <entry key="..\:/AndroidStudioProjects/ProyectoFinalDesarrolloMovil/app/src/main/res/layout/activity_update_password.xml" value="0.35260416666666666" />
         <entry key="..\:/AndroidStudioProjects/ProyectoFinalDesarrolloMovil/app/src/main/res/layout/bottom_sheet_dialog_layout.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects/ProyectoFinalDesarrolloMovil/app/src/main/res/layout/fragment_dashboard.xml" value="0.36666666666666664" />
@@ -22,6 +23,8 @@
         <entry key="..\:/AndroidStudioProjects/ProyectoFinalDesarrolloMovil/app/src/main/res/layout/profile_fragment.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects/ProyectoFinalDesarrolloMovil/app/src/main/res/menu/bottom_nav_menu.xml" value="0.20520833333333333" />
         <entry key="..\:/AndroidStudioProjects/ProyectoFinalDesarrolloMovil/app/src/main/res/menu/more_options_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/ProyectoFinalDesarrolloMovil/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.13177083333333334" />
+        <entry key="..\:/AndroidStudioProjects/ProyectoFinalDesarrolloMovil/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.13177083333333334" />
       </map>
     </option>
   </component>
