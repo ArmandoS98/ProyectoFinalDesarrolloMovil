@@ -8,6 +8,8 @@ import com.aesc.proyectofinaldesarrollomovil.R
 import com.aesc.proyectofinaldesarrollomovil.databinding.ActivityCheckEmailBinding
 import com.aesc.proyectofinaldesarrollomovil.databinding.ActivitySignInBinding
 import com.aesc.proyectofinaldesarrollomovil.extension.goToActivityF
+import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesKey
+import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
@@ -31,6 +33,7 @@ class CheckEmailActivity : AppCompatActivity(), View.OnClickListener {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     if (user.isEmailVerified) {
+                        PreferencesProvider.set(this, PreferencesKey.RECORDARME, true)
                         goToActivityF<MainActivity>()
                     } else {
                         Toast.makeText(
@@ -47,6 +50,7 @@ class CheckEmailActivity : AppCompatActivity(), View.OnClickListener {
         val currentUser = auth.currentUser
         if (currentUser != null) {
             if (currentUser.isEmailVerified) {
+                PreferencesProvider.set(this, PreferencesKey.RECORDARME, true)
                 goToActivityF<MainActivity>()
             } else {
                 sendEmailVerification()
