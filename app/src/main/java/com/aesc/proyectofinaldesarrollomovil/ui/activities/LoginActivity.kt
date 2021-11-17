@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.aesc.proyectofinaldesarrollomovil.R
 import com.aesc.proyectofinaldesarrollomovil.databinding.ActivityLoginBinding
@@ -18,14 +17,12 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.firestore.QuerySnapshot
 
-import androidx.annotation.NonNull
 import com.aesc.proyectofinaldesarrollomovil.extension.goToActivityF
+import com.aesc.proyectofinaldesarrollomovil.extension.toast
 import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesKey
 import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesProvider
-
-import com.google.android.gms.tasks.OnCompleteListener
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.statusProgress
 
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
@@ -51,14 +48,20 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.signInAppCompatButton -> {
+                statusProgress(true,binding.fragmentProgressBar)
                 val email = binding.emailEditText.text.toString()
                 val password = binding.passwordEditText.text.toString()
                 if (email.isNotEmpty() && password.isNotEmpty())
                     signIn(email, password)
-                else
-                    Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                else {
+                    statusProgress(false, binding.fragmentProgressBar)
+                    toast("Authentication failed.")
+                }
             }
             R.id.sibFirebaseGoogle -> {
+                //progress bar
+                statusProgress(true, binding.fragmentProgressBar)
+
                 //Configuracion
                 googleConf = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getString(R.string.default_web_client_id))
@@ -92,6 +95,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e)
+                statusProgress(false, binding.fragmentProgressBar)
+                toast("Google sign in failed")
             }
         }
     }
@@ -109,6 +114,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
+                    toast("signInWithCredential:failure")
+                    statusProgress(false, binding.fragmentProgressBar)
                     updateUI(null)
                 }
             }
@@ -131,7 +138,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("MainActivity", "signInWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                    toast("Authentication failed.")
+                    statusProgress(false, binding.fragmentProgressBar)
                     updateUI(null)
                 }
             }
@@ -145,6 +153,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val reslut = task.result.isEmpty
+                        statusProgress(false, binding.fragmentProgressBar)
                         if (reslut) {
                             //Add new user
                             val user = User(

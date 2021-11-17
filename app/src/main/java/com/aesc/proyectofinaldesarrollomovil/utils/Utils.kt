@@ -1,5 +1,8 @@
 package com.aesc.proyectofinaldesarrollomovil.utils
 
+import android.view.View
+import androidx.fragment.app.FragmentContainerView
+
 object Utils {
     private const val SECOND_MILLIS = 1000
     private const val MINUTE_MILLIS = 60 * SECOND_MILLIS
@@ -32,4 +35,7 @@ object Utils {
 
     fun logsUtils(msg: String) = println("DEBUG --> $msg")
 
+    fun statusProgress(status: Boolean, progressBar: FragmentContainerView) {
+        progressBar.visibility = if (status) View.VISIBLE else View.GONE
+    }
 }

@@ -1,9 +1,13 @@
 package com.aesc.proyectofinaldesarrollomovil.ui.fragments.profile
 
+import android.R.attr
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -23,6 +27,7 @@ import com.aesc.proyectofinaldesarrollomovil.ui.activities.DeleteAccountActivity
 import com.aesc.proyectofinaldesarrollomovil.ui.activities.LoginActivity
 import com.aesc.proyectofinaldesarrollomovil.ui.activities.UpdatePasswordActivity
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.statusProgress
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -33,8 +38,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import java.io.File
+import android.R.attr.data
+import androidx.core.net.toUri
+import com.aesc.proyectofinaldesarrollomovil.extension.toast
+
 
 class ProfileFragment : Fragment(), View.OnClickListener {
+    private val REQUEST_CODE = 200
     private lateinit var auth: FirebaseAuth
     private lateinit var viewModel: ProfileViewModel
     private var _binding: ProfileFragmentBinding? = null
@@ -68,6 +80,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         binding.floatingActionButton.setOnClickListener(this)
         binding.tvUpdatePassword.setOnClickListener(this)
         binding.tvDeleteAccount.setOnClickListener(this)
+        statusProgress(true, binding.fragmentProgressBar)
         auth = Firebase.auth
         return binding.root
     }
@@ -75,6 +88,11 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         updateUI()
+    }
+
+    fun capturePhoto() {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(cameraIntent, REQUEST_CODE)
     }
 
     override fun onClick(v: View?) {
@@ -104,7 +122,8 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 usersDao.updateUserInfo(user)
             }
             R.id.floatingActionButton -> {
-                fileManager()
+//                fileManager()
+                capturePhoto()
             }
             R.id.tvUpdatePassword -> {
                 requireActivity().goToActivity<UpdatePasswordActivity>()
@@ -123,14 +142,33 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == fileResult) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE && data != null) {
+            statusProgress(true, binding.fragmentProgressBar)
+            val photo =data.extras!!.get("data") as Bitmap
+            binding.userImage.setImageBitmap(photo)
+            val file = File(requireContext().cacheDir,"CUSTOM NAME") //Get Access to a local file.
+            file.delete() // Delete the File, just in Case, that there was still another File
+            file.createNewFile()
+            val fileOutputStream = file.outputStream()
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            photo.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream)
+            val bytearray = byteArrayOutputStream.toByteArray()
+            fileOutputStream.write(bytearray)
+            fileOutputStream.flush()
+            fileOutputStream.close()
+            byteArrayOutputStream.close()
+
+            val photo_from_camera = file.toUri()
+            imageUpload(photo_from_camera)
+        }
+        /*if (requestCode == fileResult) {
             if (resultCode == RESULT_OK && data != null) {
                 val uri = data.data
 
                 uri?.let { imageUpload(it) }
 
             }
-        }
+        }*/
     }
 
     private fun imageUpload(mUri: Uri) {
@@ -171,6 +209,8 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             }
         }.addOnFailureListener {
             Log.i("TAG", "file upload error")
+            requireActivity().toast("file upload error")
+            statusProgress(false, binding.fragmentProgressBar)
         }
     }
 
@@ -184,6 +224,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 Utils.logsUtils("$user")
                 binding.userImage.loadByURL(user.imageUrl)
                 binding.tieUsername.setText(user.displayName)
+                statusProgress(false, binding.fragmentProgressBar)
             }
         }
         binding.tieUsername.addTextChangedListener(object : TextWatcher {

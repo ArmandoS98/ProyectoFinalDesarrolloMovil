@@ -11,12 +11,17 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.aesc.proyectofinaldesarrollomovil.R
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
+
+fun Activity.toast(s: String) {
+    Toast.makeText(this, s, Toast.LENGTH_SHORT).show()
+}
 
 fun View.snack(
     color: String,
