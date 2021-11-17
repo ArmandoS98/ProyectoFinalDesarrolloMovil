@@ -52,4 +52,6 @@
     <string name="about_us">About us</string>
     <string name="volver">Volver</string>
     <string name="datos_de_la_ubicacion">Datos de la Ubicacion</string>
+    <string name="tomar_una_foto">Tomar una foto</string>
+    <string name="subir_de_la_galeria">Subir de la Galeria</string>
 </resources>

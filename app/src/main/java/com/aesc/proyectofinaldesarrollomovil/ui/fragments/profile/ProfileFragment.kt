@@ -1,7 +1,5 @@
 package com.aesc.proyectofinaldesarrollomovil.ui.fragments.profile
 
-import android.R.attr
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Bitmap
@@ -12,7 +10,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.*
-import android.widget.Toast
+import android.widget.LinearLayout
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.aesc.proyectofinaldesarrollomovil.R
@@ -20,6 +19,7 @@ import com.aesc.proyectofinaldesarrollomovil.databinding.ProfileFragmentBinding
 import com.aesc.proyectofinaldesarrollomovil.extension.goToActivity
 import com.aesc.proyectofinaldesarrollomovil.extension.goToActivityF
 import com.aesc.proyectofinaldesarrollomovil.extension.loadByURL
+import com.aesc.proyectofinaldesarrollomovil.extension.toast
 import com.aesc.proyectofinaldesarrollomovil.provider.firebase.daos.UserDao
 import com.aesc.proyectofinaldesarrollomovil.provider.firebase.models.User
 import com.aesc.proyectofinaldesarrollomovil.ui.activities.AboutUsActivity
@@ -28,6 +28,7 @@ import com.aesc.proyectofinaldesarrollomovil.ui.activities.LoginActivity
 import com.aesc.proyectofinaldesarrollomovil.ui.activities.UpdatePasswordActivity
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils.statusProgress
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -40,18 +41,15 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
-import android.R.attr.data
-import androidx.core.net.toUri
-import com.aesc.proyectofinaldesarrollomovil.extension.toast
-
 
 class ProfileFragment : Fragment(), View.OnClickListener {
     private val REQUEST_CODE = 200
+    private val REQUEST_CODE_CHOOSE = 1
     private lateinit var auth: FirebaseAuth
     private lateinit var viewModel: ProfileViewModel
     private var _binding: ProfileFragmentBinding? = null
     private val binding get() = _binding!!
-    private val fileResult = 1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +62,6 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val itemId = item.itemId
         requireActivity().goToActivity<AboutUsActivity>()
         return super.onOptionsItemSelected(item)
     }
@@ -87,7 +84,15 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateUI()
+
+        val currentUser = auth.currentUser
+        val usersDao = UserDao()
+        usersDao.getCurrentUser(currentUser!!.uid, {
+            updateUI(it)
+        }, {
+//Nada
+        })
+
     }
 
     fun capturePhoto() {
@@ -105,13 +110,6 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 val currentUser = auth.currentUser
                 val usersDao = UserDao()
                 val newUserName = binding.tieUsername.text.toString()
-//                val newEmail = binding.tieEmail.text.toString()
-
-                /*  val profileUpdates = userProfileChangeRequest {
-                      photoUri = currentUser!!.photoUrl
-                      displayName = newUserName
-                  }
-  */
                 val user =
                     User(
                         currentUser!!.uid,
@@ -119,11 +117,19 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                         currentUser.photoUrl.toString(),
                         currentUser.email!!
                     )
-                usersDao.updateUserInfo(user)
+
+                statusProgress(true, binding.fragmentProgressBar)
+                usersDao.updateUserInfo(user, {
+                    requireActivity().toast("Informacion Acutalizada con exito")
+                    statusProgress(false, binding.fragmentProgressBar)
+
+                }, {
+                    requireActivity().toast("Error al actualizar informacion")
+                    statusProgress(false, binding.fragmentProgressBar)
+                })
             }
             R.id.floatingActionButton -> {
-//                fileManager()
-                capturePhoto()
+                showBottomSheetDialog()
             }
             R.id.tvUpdatePassword -> {
                 requireActivity().goToActivity<UpdatePasswordActivity>()
@@ -137,38 +143,39 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     private fun fileManager() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
-        startActivityForResult(intent, fileResult)
+        startActivityForResult(intent, REQUEST_CODE_CHOOSE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE && data != null) {
-            statusProgress(true, binding.fragmentProgressBar)
-            val photo =data.extras!!.get("data") as Bitmap
-            binding.userImage.setImageBitmap(photo)
-            val file = File(requireContext().cacheDir,"CUSTOM NAME") //Get Access to a local file.
-            file.delete() // Delete the File, just in Case, that there was still another File
-            file.createNewFile()
-            val fileOutputStream = file.outputStream()
-            val byteArrayOutputStream = ByteArrayOutputStream()
-            photo.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream)
-            val bytearray = byteArrayOutputStream.toByteArray()
-            fileOutputStream.write(bytearray)
-            fileOutputStream.flush()
-            fileOutputStream.close()
-            byteArrayOutputStream.close()
+        statusProgress(true, binding.fragmentProgressBar)
+        when (requestCode) {
+            REQUEST_CODE ->
+                if (resultCode == RESULT_OK && data != null) {
+                    val photo = data.extras!!.get("data") as Bitmap
+                    binding.userImage.setImageBitmap(photo)
+                    val file =
+                        File(requireContext().cacheDir, "CUSTOM NAME") //Get Access to a local file.
+                    file.delete() // Delete the File, just in Case, that there was still another File
+                    file.createNewFile()
+                    val fileOutputStream = file.outputStream()
+                    val byteArrayOutputStream = ByteArrayOutputStream()
+                    photo.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+                    val bytearray = byteArrayOutputStream.toByteArray()
+                    fileOutputStream.write(bytearray)
+                    fileOutputStream.flush()
+                    fileOutputStream.close()
+                    byteArrayOutputStream.close()
 
-            val photo_from_camera = file.toUri()
-            imageUpload(photo_from_camera)
+                    val photoCamera = file.toUri()
+                    imageUpload(photoCamera)
+                }
+            REQUEST_CODE_CHOOSE ->
+                if (resultCode == RESULT_OK && data != null) {
+                    val uri = data.data
+                    uri?.let { imageUpload(it) }
+                }
         }
-        /*if (requestCode == fileResult) {
-            if (resultCode == RESULT_OK && data != null) {
-                val uri = data.data
-
-                uri?.let { imageUpload(it) }
-
-            }
-        }*/
     }
 
     private fun imageUpload(mUri: Uri) {
@@ -178,34 +185,37 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
         fileName.putFile(mUri).addOnSuccessListener {
             fileName.downloadUrl.addOnSuccessListener { uri ->
-
                 val currentUser = auth.currentUser
                 val usersDao = UserDao()
                 val newUserName = binding.tieUsername.text.toString()
-//                val newEmail = binding.tieEmail.text.toString()
 
-                val user =
-                    User(currentUser!!.uid, newUserName, uri.toString(), currentUser.email!!)
-                usersDao.updateUserInfo(user)
-                Toast.makeText(
-                    requireContext(), "Se realizaron los cambios correctamente.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                updateUI()
-                /*   val profileUpdates = userProfileChangeRequest {
-                       photoUri = Uri.parse(uri.toString())
-                   }
+                val user = User(currentUser!!.uid, newUserName, uri.toString(), currentUser.email!!)
+                usersDao.updateUserInfo(user, {
+                    //Exitos
+                    requireActivity().toast("Hola ${it.displayName}")
+                    updateUI(it)
+                }, {
+                    //Error
+                    requireActivity().toast("ERROR $it.")
+                    statusProgress(false, binding.fragmentProgressBar)
+                })
+//                updateUI()
 
-                   user.updateProfile(profileUpdates)
-                       .addOnCompleteListener { task ->
-                           if (task.isSuccessful) {
-                               Toast.makeText(
-                                   requireContext(), "Se realizaron los cambios correctamente.",
-                                   Toast.LENGTH_SHORT
-                               ).show()
-                               updateUI()
-                           }
-                       }*/
+
+                /*  val profileUpdates = userProfileChangeRequest {
+                      photoUri = Uri.parse(uri.toString())
+                  }
+
+                  user.updateProfile(profileUpdates)
+                      .addOnCompleteListener { task ->
+                          if (task.isSuccessful) {
+                              Toast.makeText(
+                                  requireContext(), "Se realizaron los cambios correctamente.",
+                                  Toast.LENGTH_SHORT
+                              ).show()
+                              updateUI()
+                          }
+                      }*/
             }
         }.addOnFailureListener {
             Log.i("TAG", "file upload error")
@@ -214,19 +224,27 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun updateUI() {
-        val currentUser = auth.currentUser
-        val userDao = UserDao()
+    private fun showBottomSheetDialog() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_image)
+        val copy = bottomSheetDialog.findViewById<LinearLayout>(R.id.takePhoto)
+        val share = bottomSheetDialog.findViewById<LinearLayout>(R.id.uploadFromGallery)
 
-        GlobalScope.launch(Dispatchers.IO) {
-            val user = userDao.getUserByid(currentUser!!.uid).await().toObject(User::class.java)!!
-            withContext(Dispatchers.Main) {
-                Utils.logsUtils("$user")
-                binding.userImage.loadByURL(user.imageUrl)
-                binding.tieUsername.setText(user.displayName)
-                statusProgress(false, binding.fragmentProgressBar)
-            }
+        copy!!.setOnClickListener {
+            capturePhoto()
+            bottomSheetDialog.dismiss()
         }
+        share!!.setOnClickListener {
+            fileManager()
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.show()
+    }
+
+    private fun updateUI(user: User) {
+        binding.userImage.loadByURL(user.imageUrl)
+        binding.tieUsername.setText(user.displayName)
+        statusProgress(false, binding.fragmentProgressBar)
         binding.tieUsername.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
