@@ -1,7 +1,9 @@
 package com.aesc.proyectofinaldesarrollomovil.ui.fragments.profile
 
+import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -15,6 +17,8 @@ import android.view.*
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -30,9 +34,9 @@ import com.aesc.proyectofinaldesarrollomovil.ui.activities.AboutUsActivity
 import com.aesc.proyectofinaldesarrollomovil.ui.activities.DeleteAccountActivity
 import com.aesc.proyectofinaldesarrollomovil.ui.activities.LoginActivity
 import com.aesc.proyectofinaldesarrollomovil.ui.activities.UpdatePasswordActivity
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogInfo
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils.statusProgress
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -40,7 +44,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.util.*
+
 
 class ProfileFragment : Fragment(), View.OnClickListener {
     private val REQUEST_CODE = 200
@@ -50,6 +54,9 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     private var _binding: ProfileFragmentBinding? = null
     private val binding get() = _binding!!
 
+    companion object {
+        const val CAMERA_REQUEST_CODE = 1998
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -229,8 +236,14 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         val share = bottomSheetDialog.findViewById<LinearLayout>(R.id.uploadFromGallery)
 
         copy!!.setOnClickListener {
-            capturePhoto()
-            bottomSheetDialog.dismiss()
+            if (isPermissionsGranted()) {
+                capturePhoto()
+                bottomSheetDialog.dismiss()
+            } else {
+                bottomSheetDialog.dismiss()
+                requestLocationPermission()
+            }
+
         }
         share!!.setOnClickListener {
             fileManager()
@@ -281,5 +294,40 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         alertDialog1.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         alertDialog1.setCancelable(false)
         alertDialog1.show()
+    }
+
+    private fun isPermissionsGranted() = ContextCompat.checkSelfPermission(
+        requireContext(),
+        Manifest.permission.CAMERA
+    ) == PackageManager.PERMISSION_GRANTED
+
+    private fun requestLocationPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.CAMERA
+            )
+        ) {
+            dialogInfo(requireContext(),"Para activar la\ncamara ve a ajustes\ny acepta los permisos")
+        } else {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.CAMERA),
+                CAMERA_REQUEST_CODE
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            CAMERA_REQUEST_CODE -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                capturePhoto()
+            } else {
+                dialogInfo(requireContext(),"Para activar la\ncamara ve a ajustes\ny acepta los permisos")
+            }
+        }
     }
 }

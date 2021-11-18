@@ -1,6 +1,5 @@
 package com.aesc.proyectofinaldesarrollomovil.ui.adapters
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -8,23 +7,15 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.motion.widget.Key.VISIBILITY
 import androidx.recyclerview.widget.RecyclerView
 import com.aesc.proyectofinaldesarrollomovil.R
 import com.aesc.proyectofinaldesarrollomovil.extension.loadByURL
-import com.aesc.proyectofinaldesarrollomovil.provider.firebase.daos.LocationDao
-import com.aesc.proyectofinaldesarrollomovil.provider.firebase.daos.UserDao
 import com.aesc.proyectofinaldesarrollomovil.provider.firebase.models.Locations
-import com.aesc.proyectofinaldesarrollomovil.provider.firebase.models.User
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils
-import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class LocationAdapter(options: FirestoreRecyclerOptions<Locations>, val listener: IPostAdapter) :
     FirestoreRecyclerAdapter<Locations, LocationAdapter.PostViewHolder>(

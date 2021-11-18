@@ -100,4 +100,19 @@ object Utils {
         alertDialog1.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         alertDialog1.show()
     }
+
+    fun dialogBienvenida(context: Context) {
+        var alertDialog1: AlertDialog? = null
+        val dialogBuilder = AlertDialog.Builder(context)
+        val layoutView: View =
+            LayoutInflater.from(context).inflate(R.layout.custom_dialog_bienvenida, null)
+        val mButtonSi = layoutView.findViewById<ImageView>(R.id.btnClose)
+        mButtonSi.setOnClickListener {
+            alertDialog1!!.dismiss()
+        }
+        dialogBuilder.setView(layoutView)
+        alertDialog1 = dialogBuilder.create()
+        alertDialog1.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog1.show()
+    }
 }

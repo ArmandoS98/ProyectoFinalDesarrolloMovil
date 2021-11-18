@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -14,13 +13,13 @@ import com.aesc.proyectofinaldesarrollomovil.R
 import com.aesc.proyectofinaldesarrollomovil.extension.toast
 import com.aesc.proyectofinaldesarrollomovil.provider.firebase.daos.LocationDao
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogError
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogInfo
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -39,7 +38,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -122,7 +121,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
                 Manifest.permission.ACCESS_FINE_LOCATION
             )
         ) {
-            requireActivity().toast("Ve a ajustes y acepta los permisos")
+            dialogInfo(requireContext(), getString(R.string.msg_aceptar_permisos))
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(),
@@ -141,7 +140,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
             LOCATION_REQUEST_CODE -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 map.isMyLocationEnabled = true
             } else {
-                requireActivity().toast("Para activar la localización ve a ajustes y acepta los permisos")
+                dialogInfo(requireContext(), getString(R.string.msg_activar_localizacion))
             }
             else -> {
             }
@@ -153,7 +152,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
         if (!::map.isInitialized) return
         if (!isPermissionsGranted()) {
             map.isMyLocationEnabled = false
-            requireActivity().toast("Para activar la localización ve a ajustes y acepta los permisos")
+            dialogInfo(requireContext(), getString(R.string.msg_activar_localizacion))
         }
     }
 
@@ -176,7 +175,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
 
         send!!.setOnClickListener {
             val names = name!!.text.toString()
-            if (names.isNotEmpty()){
+            if (names.isNotEmpty()) {
                 locationDao = LocationDao()
                 currentLocation.let {
                     val nameLocation = name.text.toString()
@@ -189,8 +188,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
 
                 bottomSheetDialog.dismiss()
                 requireActivity().toast("Informacion Almacenada")
-            }else{
-                dialogError(requireContext(),"Ingresa un nombre\npara la ubicacion")
+            } else {
+                dialogError(requireContext(), "Ingresa un nombre\npara la ubicacion")
             }
 
         }

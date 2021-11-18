@@ -1,10 +1,14 @@
 package com.aesc.proyectofinaldesarrollomovil.ui.fragments.history
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +19,7 @@ import com.aesc.proyectofinaldesarrollomovil.provider.firebase.models.Locations
 import com.aesc.proyectofinaldesarrollomovil.ui.adapters.IPostAdapter
 import com.aesc.proyectofinaldesarrollomovil.ui.adapters.LocationAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.*
 
 class HistoryFragment : Fragment(), IPostAdapter {
 
@@ -24,8 +28,6 @@ class HistoryFragment : Fragment(), IPostAdapter {
     private lateinit var viewModel: HistoryViewModel
     private var _binding: HistoryFragmentBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -49,6 +51,7 @@ class HistoryFragment : Fragment(), IPostAdapter {
         val recyclerViewOtions =
             FirestoreRecyclerOptions.Builder<Locations>().setQuery(query, Locations::class.java)
                 .build()
+
         adapter = LocationAdapter(recyclerViewOtions, this)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -75,6 +78,27 @@ class HistoryFragment : Fragment(), IPostAdapter {
     }
 
     override fun onDeleteClicked(id: String) {
-        locationDao.deleteLocation(id)
+        dialogDeleteUbication(id)
+    }
+
+
+    private fun dialogDeleteUbication(id: String) {
+        var alertDialog1: AlertDialog? = null
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+        val layoutView: View =
+            LayoutInflater.from(context).inflate(R.layout.custom_dialog_delete_ubication, null)
+        val mButtonNo = layoutView.findViewById<Button>(R.id.btnNo)
+        val mButtonSi = layoutView.findViewById<Button>(R.id.btnSi)
+        mButtonSi.setOnClickListener {
+            locationDao.deleteLocation(id)
+            alertDialog1!!.dismiss()
+        }
+        mButtonNo.setOnClickListener {
+            alertDialog1!!.dismiss()
+        }
+        dialogBuilder.setView(layoutView)
+        alertDialog1 = dialogBuilder.create()
+        alertDialog1.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog1.show()
     }
 }

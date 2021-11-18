@@ -5,7 +5,8 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 
 enum class PreferencesKey(val value: String) {
-    RECORDARME("authUser")
+    RECORDARME("authUser"),
+    FIRST_TIME("com.aesc.proyectofinaldesarrollomovil")
 }
 
 object PreferencesProvider {

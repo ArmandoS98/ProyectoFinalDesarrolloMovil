@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">PFDM-UDV-2021</string>
+    <string name="app_version">V1.0.0</string>
     <string name="password">Contraseña</string>
     <string name="new_password">Nueva contraseña</string>
     <string name="current_password">Contraseña actual</string>
@@ -64,6 +65,8 @@
     <string name="dropped_pin">Dropped Pin</string>
     <string name="poi">poi</string>
     <string name="estas_seguro_que_quieres_cerrar_sesion">Estas seguro que quieres\n cerrar Sesion?</string>
+    <string name="estas_seguro_que_quieres_ubicacion">Estas seguro que quieres\neliminar esta ubicacion?</string>
+    <string name="msg_de_bienvenida">Hi there!\nBienvenid@ a la version\n1.0.0 de esta aplicacion\nespero no la hagas tronar\ny que te diviertas\ndescubriendola.</string>
     <string name="si">Si</string>
     <string name="no">No</string>
     <string name="aceptar">Aceptar</string>
@@ -80,4 +83,6 @@
     <string name="contrasenia_cambiada">Se cambio la contraseña.</string>
     <string name="todos_los_campos_requeridos">Todos los campos\nson obligatorios</string>
     <string name="cuenta_no_creada_intentar_de_nuevo">No se pudo crear\nla cuenta.\nVuelva a intertarlo</string>
+    <string name="msg_activar_localizacion">Para activar la localización ve a ajustes y acepta los permisos</string>
+    <string name="msg_aceptar_permisos">Ve a ajustes y acepta los permisos</string>
 </resources>

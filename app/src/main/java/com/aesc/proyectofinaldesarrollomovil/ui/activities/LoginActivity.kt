@@ -108,6 +108,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
+
                     PreferencesProvider.set(this, PreferencesKey.RECORDARME, true)
                     updateUI(user)
                 } else {

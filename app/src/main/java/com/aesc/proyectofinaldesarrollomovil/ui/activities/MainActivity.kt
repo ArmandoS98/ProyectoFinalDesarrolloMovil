@@ -12,6 +12,7 @@ import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesKey
 import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesProvider
 import com.aesc.proyectofinaldesarrollomovil.ui.base.BaseActivity
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogBienvenida
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -60,18 +61,14 @@ class MainActivity : BaseActivity() {
         if (currentUser == null || !recordarme)
             goToActivityF<LoginActivity>()
         else {
-            val user = auth.currentUser
-            if (!user!!.isEmailVerified)
+            if (!currentUser.isEmailVerified)
                 goToActivityF<CheckEmailActivity>()
             else {
-                user.let {
-                    val name = user.displayName
-                    val email = user.email
-                    val photoUrl = user.photoUrl
-                    val emailVerified = user.isEmailVerified
-                    val uid = user.uid
-
-                    Utils.logsUtils("Name: $name\nEmail: $email\nPhoto: $photoUrl\nEmail Verified: $emailVerified\nUid: $uid")
+                //Bienvenida de paimon
+                val isTheFirstTime = PreferencesProvider.bool(this, PreferencesKey.FIRST_TIME)
+                if (!isTheFirstTime) {
+                    dialogBienvenida(this)
+                    PreferencesProvider.set(this, PreferencesKey.FIRST_TIME, true)
                 }
             }
         }
