@@ -4,16 +4,16 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.aesc.proyectofinaldesarrollomovil.R
+import com.aesc.proyectofinaldesarrollomovil.extension.toast
 import com.aesc.proyectofinaldesarrollomovil.provider.firebase.daos.LocationDao
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogError
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -36,6 +36,36 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
     private lateinit var viewModel: MapsViewModel
     private lateinit var map: GoogleMap
     private lateinit var locationDao: LocationDao
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true);
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.maps_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.normal_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_NORMAL
+            true
+        }
+        R.id.hybrid_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_HYBRID
+            true
+        }
+        R.id.satellite_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_SATELLITE
+            true
+        }
+        R.id.terrain_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_TERRAIN
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,7 +109,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
     ) == PackageManager.PERMISSION_GRANTED
 
     private fun enableMyLocation() {
-        if (!::map.isInitialized) return
         if (isPermissionsGranted()) {
             map.isMyLocationEnabled = true
         } else {
@@ -93,7 +122,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
                 Manifest.permission.ACCESS_FINE_LOCATION
             )
         ) {
-            Toast.makeText(context, "Ve a ajustes y acepta los permisos", Toast.LENGTH_SHORT).show()
+            requireActivity().toast("Ve a ajustes y acepta los permisos")
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(),
@@ -112,11 +141,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
             LOCATION_REQUEST_CODE -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 map.isMyLocationEnabled = true
             } else {
-                Toast.makeText(
-                    context,
-                    "Para activar la localización ve a ajustes y acepta los permisos",
-                    Toast.LENGTH_SHORT
-                ).show()
+                requireActivity().toast("Para activar la localización ve a ajustes y acepta los permisos")
             }
             else -> {
             }
@@ -128,11 +153,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
         if (!::map.isInitialized) return
         if (!isPermissionsGranted()) {
             map.isMyLocationEnabled = false
-            Toast.makeText(
-                context,
-                "Para activar la localización ve a ajustes y acepta los permisos",
-                Toast.LENGTH_SHORT
-            ).show()
+            requireActivity().toast("Para activar la localización ve a ajustes y acepta los permisos")
         }
     }
 
@@ -154,24 +175,24 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
         }
 
         send!!.setOnClickListener {
-            locationDao = LocationDao()
+            val names = name!!.text.toString()
+            if (names.isNotEmpty()){
+                locationDao = LocationDao()
+                currentLocation.let {
+                    val nameLocation = name.text.toString()
+                    locationDao.addLocation(
+                        currentLocation.latitude,
+                        currentLocation.longitude,
+                        nameLocation
+                    )
+                }
 
-            currentLocation.let {
-                val nameLocation = name!!.text.toString()
-                locationDao.addLocation(
-                    currentLocation.latitude,
-                    currentLocation.longitude,
-                    nameLocation
-                )
+                bottomSheetDialog.dismiss()
+                requireActivity().toast("Informacion Almacenada")
+            }else{
+                dialogError(requireContext(),"Ingresa un nombre\npara la ubicacion")
             }
 
-            bottomSheetDialog.dismiss()
-
-            Toast.makeText(
-                context,
-                "Informacion Almacenada",
-                Toast.LENGTH_SHORT
-            ).show()
         }
         bottomSheetDialog.show()
     }

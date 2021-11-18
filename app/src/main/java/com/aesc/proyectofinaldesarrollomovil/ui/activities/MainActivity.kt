@@ -1,7 +1,6 @@
 package com.aesc.proyectofinaldesarrollomovil.ui.activities
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -11,6 +10,7 @@ import com.aesc.proyectofinaldesarrollomovil.databinding.ActivityMainBinding
 import com.aesc.proyectofinaldesarrollomovil.extension.goToActivityF
 import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesKey
 import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesProvider
+import com.aesc.proyectofinaldesarrollomovil.ui.base.BaseActivity
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

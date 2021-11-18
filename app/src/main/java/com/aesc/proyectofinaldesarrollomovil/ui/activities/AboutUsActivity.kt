@@ -2,10 +2,10 @@ package com.aesc.proyectofinaldesarrollomovil.ui.activities
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import com.aesc.proyectofinaldesarrollomovil.databinding.ActivityAboutUsBinding
+import com.aesc.proyectofinaldesarrollomovil.ui.base.BaseActivity
 
-class AboutUsActivity : AppCompatActivity(), View.OnClickListener {
+class AboutUsActivity : BaseActivity(), View.OnClickListener {
     private lateinit var binding: ActivityAboutUsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

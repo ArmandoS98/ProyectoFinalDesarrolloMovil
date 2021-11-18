@@ -1,18 +1,19 @@
 package com.aesc.proyectofinaldesarrollomovil.ui.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import com.aesc.proyectofinaldesarrollomovil.R
 import com.aesc.proyectofinaldesarrollomovil.databinding.ActivityDeleteAccountBinding
 import com.aesc.proyectofinaldesarrollomovil.extension.goToActivityF
+import com.aesc.proyectofinaldesarrollomovil.ui.base.BaseActivity
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogDeleteAccount
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogError
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class DeleteAccountActivity : AppCompatActivity(), View.OnClickListener {
+class DeleteAccountActivity : BaseActivity(), View.OnClickListener {
     private lateinit var binding: ActivityDeleteAccountBinding
     private lateinit var auth: FirebaseAuth
 
@@ -27,7 +28,10 @@ class DeleteAccountActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(p0: View?) {
         val password = binding.tiePassword.text.toString()
-        deleteAccount(password)
+        if (password.isNotEmpty())
+            deleteAccount(password)
+        else
+            dialogError(this, getString(R.string.password_incorrecta))
     }
 
     private fun deleteAccount(password: String) {
@@ -44,18 +48,15 @@ class DeleteAccountActivity : AppCompatActivity(), View.OnClickListener {
                         user.delete()
                             .addOnCompleteListener { taskDeleteAcount ->
                                 if (taskDeleteAcount.isSuccessful) {
-                                    Toast.makeText(
-                                        this, "Se elminó tu cuenta.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    dialogDeleteAccount(
+                                        this,
+                                        getString(R.string.se_elimino_la_cuenta)
+                                    )
                                     signOut()
                                 }
                             }
                     } else {
-                        Toast.makeText(
-                            this, "La contraseña ingresada es incorrecta.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        dialogError(this, getString(R.string.password_incorrecta))
                     }
                 }
         }

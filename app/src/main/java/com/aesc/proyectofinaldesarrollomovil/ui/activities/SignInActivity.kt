@@ -3,19 +3,21 @@ package com.aesc.proyectofinaldesarrollomovil.ui.activities
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.aesc.proyectofinaldesarrollomovil.R
 import com.aesc.proyectofinaldesarrollomovil.databinding.ActivitySignInBinding
 import com.aesc.proyectofinaldesarrollomovil.extension.goToActivityF
 import com.aesc.proyectofinaldesarrollomovil.provider.firebase.daos.UserDao
 import com.aesc.proyectofinaldesarrollomovil.provider.firebase.models.User
+import com.aesc.proyectofinaldesarrollomovil.ui.base.BaseActivity
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogError
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogInfo
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import java.util.regex.Pattern
 
-class SignInActivity : AppCompatActivity(), View.OnClickListener {
+class SignInActivity : BaseActivity(), View.OnClickListener {
     private lateinit var binding: ActivitySignInBinding
     private lateinit var auth: FirebaseAuth
 
@@ -35,6 +37,8 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                 goToActivityF<LoginActivity>()
             }
             R.id.btnCreateNewAccount -> {
+                Utils.statusProgress(true, binding.fragmentProgressBar)
+
                 val username = binding.tieUsername.text.toString()
                 val useremail = binding.tieEmail.text.toString()
                 val userpassword = binding.tiePassword.text.toString()
@@ -48,34 +52,30 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                                 "$"
                     )
 
-                    if (useremail.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(useremail)
-                            .matches()
+                    if (useremail.isEmpty()
+                        || !Patterns.EMAIL_ADDRESS.matcher(useremail).matches()
                     ) {
-                        Toast.makeText(
-                            this, "Ingrese un email valido.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else if (userpassword.isEmpty() || !passwordRegex.matcher(userpassword)
-                            .matches()
+                        Utils.statusProgress(false, binding.fragmentProgressBar)
+                        dialogInfo(this, getString(R.string.insertar_un_email_valido))
+                    } else if (userpassword.isEmpty()
+                        || !passwordRegex.matcher(userpassword).matches()
                     ) {
-                        Toast.makeText(
-                            this, "La contraseña es debil.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Utils.statusProgress(false, binding.fragmentProgressBar)
+                        dialogInfo(
+                            this,
+                            getString(R.string.contrasenia_no_es_valida)
+                        )
                     } else if (userpassword != userconfirmpassword) {
-                        Toast.makeText(
-                            this, "Confirma la contraseña.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Utils.statusProgress(false, binding.fragmentProgressBar)
+                        dialogInfo(this, getString(R.string.contrasenia_no_coincide))
                     } else {
                         createAccount(username, useremail, userpassword)
                     }
-                } else
-                    Toast.makeText(
-                        baseContext,
-                        "Todos los campos son obligatorios",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                } else {
+                    Utils.statusProgress(false, binding.fragmentProgressBar)
+                    dialogInfo(this, getString(R.string.todos_los_campos_requeridos))
+                }
+
             }
         }
     }
@@ -95,6 +95,7 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 val reslut = task.result.isEmpty
+                                Utils.statusProgress(false, binding.fragmentProgressBar)
                                 if (reslut) {
                                     //Add new user
                                     val user = User(
@@ -112,10 +113,8 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                             }
                         }
                 } else {
-                    Toast.makeText(
-                        this, "No se pudo crear la cuenta. Vuelva a intertarlo",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Utils.statusProgress(false, binding.fragmentProgressBar)
+                    dialogError(this, getString(R.string.cuenta_no_creada_intentar_de_nuevo))
                 }
             }
     }

@@ -3,6 +3,8 @@ package com.aesc.proyectofinaldesarrollomovil.ui.fragments.profile
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -10,7 +12,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.*
+import android.widget.Button
 import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -26,21 +30,17 @@ import com.aesc.proyectofinaldesarrollomovil.ui.activities.AboutUsActivity
 import com.aesc.proyectofinaldesarrollomovil.ui.activities.DeleteAccountActivity
 import com.aesc.proyectofinaldesarrollomovil.ui.activities.LoginActivity
 import com.aesc.proyectofinaldesarrollomovil.ui.activities.UpdatePasswordActivity
-import com.aesc.proyectofinaldesarrollomovil.utils.Utils
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils.statusProgress
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.util.*
 
 class ProfileFragment : Fragment(), View.OnClickListener {
     private val REQUEST_CODE = 200
@@ -58,7 +58,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.more_options_menu, menu);
+        inflater.inflate(R.menu.more_options_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -103,26 +103,23 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.btnLogout -> {
-                auth.signOut()
-                requireActivity().goToActivityF<LoginActivity>()
+                areYouSure()
+
             }
             R.id.btnActualizar -> {
-                val currentUser = auth.currentUser
-                val usersDao = UserDao()
-                val newUserName = binding.tieUsername.text.toString()
-                val user =
-                    User(
-                        currentUser!!.uid,
-                        newUserName,
-                        currentUser.photoUrl.toString(),
-                        currentUser.email!!
-                    )
-
                 statusProgress(true, binding.fragmentProgressBar)
-                usersDao.updateUserInfo(user, {
-                    requireActivity().toast("Informacion Acutalizada con exito")
-                    statusProgress(false, binding.fragmentProgressBar)
-
+                val usersDao = UserDao()
+                val uId = auth.currentUser!!.uid
+                usersDao.getCurrentUser(uId, { user ->
+                    val newUserName = binding.tieUsername.text.toString()
+                    val userTemp = User(uId, newUserName, user.imageUrl, user.email)
+                    usersDao.updateUserInfo(userTemp, {
+                        requireActivity().toast("Informacion Acutalizada con exito")
+                        statusProgress(false, binding.fragmentProgressBar)
+                    }, {
+                        requireActivity().toast("Error al actualizar informacion")
+                        statusProgress(false, binding.fragmentProgressBar)
+                    })
                 }, {
                     requireActivity().toast("Error al actualizar informacion")
                     statusProgress(false, binding.fragmentProgressBar)
@@ -148,10 +145,10 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        statusProgress(true, binding.fragmentProgressBar)
         when (requestCode) {
             REQUEST_CODE ->
                 if (resultCode == RESULT_OK && data != null) {
+                    statusProgress(true, binding.fragmentProgressBar)
                     val photo = data.extras!!.get("data") as Bitmap
                     binding.userImage.setImageBitmap(photo)
                     val file =
@@ -172,6 +169,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 }
             REQUEST_CODE_CHOOSE ->
                 if (resultCode == RESULT_OK && data != null) {
+                    statusProgress(true, binding.fragmentProgressBar)
                     val uri = data.data
                     uri?.let { imageUpload(it) }
                 }
@@ -244,6 +242,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     private fun updateUI(user: User) {
         binding.userImage.loadByURL(user.imageUrl)
         binding.tieUsername.setText(user.displayName)
+        binding.tvNameUser.text = user.displayName
         statusProgress(false, binding.fragmentProgressBar)
         binding.tieUsername.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -259,5 +258,28 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 binding.tvNameUser.text = s.toString()
             }
         })
+    }
+
+    private fun areYouSure() {
+        var alertDialog1: AlertDialog? = null
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+        val layoutView: View =
+            LayoutInflater.from(context).inflate(R.layout.custom_dialog_logout, null)
+        val mButtonSi = layoutView.findViewById<Button>(R.id.btnSi)
+        val mButtonNo = layoutView.findViewById<Button>(R.id.btnNo)
+        mButtonSi.setOnClickListener {
+            auth.signOut()
+            alertDialog1!!.dismiss()
+            requireActivity().goToActivityF<LoginActivity>()
+        }
+        mButtonNo.setOnClickListener {
+            alertDialog1!!.dismiss()
+//            requireActivity().supportFragmentManager.popBackStack()
+        }
+        dialogBuilder.setView(layoutView)
+        alertDialog1 = dialogBuilder.create()
+        alertDialog1.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog1.setCancelable(false)
+        alertDialog1.show()
     }
 }

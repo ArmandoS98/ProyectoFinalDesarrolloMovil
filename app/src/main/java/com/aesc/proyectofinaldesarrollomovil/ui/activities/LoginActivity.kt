@@ -4,12 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import com.aesc.proyectofinaldesarrollomovil.R
 import com.aesc.proyectofinaldesarrollomovil.databinding.ActivityLoginBinding
 import com.aesc.proyectofinaldesarrollomovil.extension.goToActivity
+import com.aesc.proyectofinaldesarrollomovil.extension.goToActivityF
 import com.aesc.proyectofinaldesarrollomovil.provider.firebase.daos.UserDao
 import com.aesc.proyectofinaldesarrollomovil.provider.firebase.models.User
+import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesKey
+import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesProvider
+import com.aesc.proyectofinaldesarrollomovil.ui.base.BaseActivity
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogError
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.statusProgress
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -18,14 +23,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 
-import com.aesc.proyectofinaldesarrollomovil.extension.goToActivityF
-import com.aesc.proyectofinaldesarrollomovil.extension.toast
-import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesKey
-import com.aesc.proyectofinaldesarrollomovil.provider.preferences.PreferencesProvider
-import com.aesc.proyectofinaldesarrollomovil.utils.Utils.statusProgress
 
-
-class LoginActivity : AppCompatActivity(), View.OnClickListener {
+class LoginActivity : BaseActivity(), View.OnClickListener {
     private val TAG: String = "LoginActivity"
     private lateinit var googleConf: GoogleSignInOptions
     private val GOOGLE_SIGN_IN = 1998
@@ -48,14 +47,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.signInAppCompatButton -> {
-                statusProgress(true,binding.fragmentProgressBar)
+                statusProgress(true, binding.fragmentProgressBar)
                 val email = binding.emailEditText.text.toString()
                 val password = binding.passwordEditText.text.toString()
                 if (email.isNotEmpty() && password.isNotEmpty())
                     signIn(email, password)
                 else {
                     statusProgress(false, binding.fragmentProgressBar)
-                    toast("Authentication failed.")
+                    dialogError(this, "Login Error")
                 }
             }
             R.id.sibFirebaseGoogle -> {
@@ -96,7 +95,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e)
                 statusProgress(false, binding.fragmentProgressBar)
-                toast("Google sign in failed")
+                dialogError(this, "Google sign in failed")
             }
         }
     }
@@ -114,8 +113,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
-                    toast("signInWithCredential:failure")
                     statusProgress(false, binding.fragmentProgressBar)
+                    dialogError(this, "Login Error")
                     updateUI(null)
                 }
             }
@@ -138,8 +137,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("MainActivity", "signInWithEmail:failure", task.exception)
-                    toast("Authentication failed.")
                     statusProgress(false, binding.fragmentProgressBar)
+                    dialogError(this, "Login Error")
                     updateUI(null)
                 }
             }

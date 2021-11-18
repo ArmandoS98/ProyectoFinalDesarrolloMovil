@@ -152,8 +152,8 @@
                     android:layout_weight="1"
                     android:backgroundTint="@android:color/holo_red_dark"
                     android:text="@string/cancelar"
-                    app:cornerRadius="15dp"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    app:cornerRadius="15dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCreateNewAccount"
@@ -161,13 +161,27 @@
                     android:layout_height="50dp"
                     android:layout_marginStart="5dp"
                     android:layout_weight="1"
-                    app:cornerRadius="15dp"
                     android:backgroundTint="@color/purple_500"
                     android:text="@string/crear"
                     android:textColor="@color/white"
+                    app:cornerRadius="15dp"
                     app:strokeColor="@color/purple_500"
                     app:strokeWidth="10dp" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
+
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentProgressBar"
+        android:name="com.aesc.proyectofinaldesarrollomovil.ui.common.ProgressBarFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/progress_bar_fragment" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -54,4 +54,30 @@
     <string name="datos_de_la_ubicacion">Datos de la Ubicacion</string>
     <string name="tomar_una_foto">Tomar una foto</string>
     <string name="subir_de_la_galeria">Subir de la Galeria</string>
+
+    <!--Maps-->
+    <string name="normal_map">Normal Map</string>
+    <string name="hybrid_map">Hybrid Map</string>
+    <string name="satellite_map">Satellite Map</string>
+    <string name="terrain_map">Terrain Map</string>
+    <string name="lat_long_snippet">Lat: %1$.5f, Long: %2$.5f</string>
+    <string name="dropped_pin">Dropped Pin</string>
+    <string name="poi">poi</string>
+    <string name="estas_seguro_que_quieres_cerrar_sesion">Estas seguro que quieres\n cerrar Sesion?</string>
+    <string name="si">Si</string>
+    <string name="no">No</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="msg_correo_de_verificacion">Se ha enviado un correo de verifiación.</string>
+    <string name="msg_verifica_tu_correo">Por favor verifica\ntu correo.</string>
+    <string name="msg_se_a_enviado_un_correo">Se ha enviado un\ncorreo de verifiación.</string>
+    <string name="enviar_otro_correo">Enviar otro correo</string>
+    <string name="password_incorrecta">La contraseña ingresada\nes incorrecta.</string>
+    <string name="se_elimino_la_cuenta">Se elminó tu cuenta.</string>
+    <string name="insertar_un_email_valido">Ingrese un email valido.</string>
+    <string name="contrasenia_no_es_valida">La contraseña es debil\nSe requiere 1 carácter\nespecial y al menos 4\ncaracteres.</string>
+    <string name="contrasenia_no_coincide">Las contraseñas\nNo coinciden.</string>
+    <string name="contrasenia_actual_incorrecta">La contraseña actual\nes incorrecta.</string>
+    <string name="contrasenia_cambiada">Se cambio la contraseña.</string>
+    <string name="todos_los_campos_requeridos">Todos los campos\nson obligatorios</string>
+    <string name="cuenta_no_creada_intentar_de_nuevo">No se pudo crear\nla cuenta.\nVuelva a intertarlo</string>
 </resources>

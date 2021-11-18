@@ -1,19 +1,21 @@
 package com.aesc.proyectofinaldesarrollomovil.ui.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import com.aesc.proyectofinaldesarrollomovil.R
 import com.aesc.proyectofinaldesarrollomovil.databinding.ActivityUpdatePasswordBinding
-import com.aesc.proyectofinaldesarrollomovil.extension.goToActivityF
+import com.aesc.proyectofinaldesarrollomovil.extension.toast
+import com.aesc.proyectofinaldesarrollomovil.ui.base.BaseActivity
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogError
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogInfo
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import java.util.regex.Pattern
 
-class UpdatePasswordActivity : AppCompatActivity(), View.OnClickListener {
+class UpdatePasswordActivity : BaseActivity(), View.OnClickListener {
     private lateinit var binding: ActivityUpdatePasswordBinding
     private lateinit var auth: FirebaseAuth
 
@@ -29,6 +31,7 @@ class UpdatePasswordActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(p0: View?) {
+        Utils.statusProgress(true, binding.fragmentProgressBar)
 
         val passwordRegex = Pattern.compile(
             "^" +
@@ -42,15 +45,11 @@ class UpdatePasswordActivity : AppCompatActivity(), View.OnClickListener {
         val repeatPassword = binding.tieRepeatPassword.text.toString()
 
         if (newPassword.isEmpty() || !passwordRegex.matcher(newPassword).matches()) {
-            Toast.makeText(
-                this, "La contraseña es debil.",
-                Toast.LENGTH_SHORT
-            ).show()
+            Utils.statusProgress(false, binding.fragmentProgressBar)
+            dialogInfo(this, getString(R.string.contrasenia_no_es_valida))
         } else if (newPassword != repeatPassword) {
-            Toast.makeText(
-                this, "Confirma la contraseña.",
-                Toast.LENGTH_SHORT
-            ).show()
+            Utils.statusProgress(false, binding.fragmentProgressBar)
+            dialogInfo(this, getString(R.string.contrasenia_no_coincide))
         } else {
             chagePassword(currentPassword, newPassword)
         }
@@ -66,24 +65,18 @@ class UpdatePasswordActivity : AppCompatActivity(), View.OnClickListener {
 
             user.reauthenticate(credential)
                 .addOnCompleteListener { task ->
+                    Utils.statusProgress(false, binding.fragmentProgressBar)
                     if (task.isSuccessful) {
-
                         user.updatePassword(password)
                             .addOnCompleteListener { taskUpdatePassword ->
                                 if (taskUpdatePassword.isSuccessful) {
-                                    Toast.makeText(
-                                        this, "Se cambio la contraseña.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    toast(getString(R.string.contrasenia_cambiada))
                                     finish()
                                 }
                             }
 
                     } else {
-                        Toast.makeText(
-                            this, "La contraseña actual es incorrecta.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        dialogError(this, getString(R.string.contrasenia_actual_incorrecta))
                     }
                 }
         }
