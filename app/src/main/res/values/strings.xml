@@ -83,6 +83,6 @@
     <string name="contrasenia_cambiada">Se cambio la contraseña.</string>
     <string name="todos_los_campos_requeridos">Todos los campos\nson obligatorios</string>
     <string name="cuenta_no_creada_intentar_de_nuevo">No se pudo crear\nla cuenta.\nVuelva a intertarlo</string>
-    <string name="msg_activar_localizacion">Para activar la localización ve a ajustes y acepta los permisos</string>
-    <string name="msg_aceptar_permisos">Ve a ajustes y acepta los permisos</string>
+    <string name="msg_activar_localizacion">Para activar\nla localización ve\na ajustes y acepta\nlos permisos</string>
+    <string name="msg_aceptar_permisos">Ve a ajustes y\nacepta los permisos</string>
 </resources>
