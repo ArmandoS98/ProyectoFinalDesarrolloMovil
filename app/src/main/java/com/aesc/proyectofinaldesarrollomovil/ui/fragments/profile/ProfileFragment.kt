@@ -286,7 +286,6 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         }
         mButtonNo.setOnClickListener {
             alertDialog1!!.dismiss()
-//            requireActivity().supportFragmentManager.popBackStack()
         }
         dialogBuilder.setView(layoutView)
         alertDialog1 = dialogBuilder.create()
