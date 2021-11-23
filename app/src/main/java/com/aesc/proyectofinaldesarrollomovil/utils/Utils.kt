@@ -1,8 +1,10 @@
 package com.aesc.proyectofinaldesarrollomovil.utils
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -108,6 +110,28 @@ object Utils {
             LayoutInflater.from(context).inflate(R.layout.custom_dialog_bienvenida, null)
         val mButtonSi = layoutView.findViewById<ImageView>(R.id.btnClose)
         mButtonSi.setOnClickListener {
+            alertDialog1!!.dismiss()
+        }
+        dialogBuilder.setView(layoutView)
+        alertDialog1 = dialogBuilder.create()
+        alertDialog1.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog1.show()
+    }
+
+    fun dialogGetCurrentLocation(context: Context) {
+        var alertDialog1: AlertDialog? = null
+        val dialogBuilder = AlertDialog.Builder(context)
+        val layoutView: View =
+            LayoutInflater.from(context).inflate(R.layout.custom_dialog_current_location, null)
+        val mButtonSi = layoutView.findViewById<Button>(R.id.btnSi)
+        val mButtonNo = layoutView.findViewById<Button>(R.id.btnNo)
+        mButtonSi.setOnClickListener {
+            context.startActivity(
+                Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            )
+            alertDialog1!!.dismiss()
+        }
+        mButtonNo.setOnClickListener {
             alertDialog1!!.dismiss()
         }
         dialogBuilder.setView(layoutView)

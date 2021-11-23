@@ -79,13 +79,13 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     ): View? {
         viewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
         _binding = ProfileFragmentBinding.inflate(inflater, container, false)
+        statusProgress(true, binding.fragmentProgressBar)
+        auth = Firebase.auth
         binding.btnLogout.setOnClickListener(this)
         binding.btnActualizar.setOnClickListener(this)
         binding.floatingActionButton.setOnClickListener(this)
         binding.tvUpdatePassword.setOnClickListener(this)
         binding.tvDeleteAccount.setOnClickListener(this)
-        statusProgress(true, binding.fragmentProgressBar)
-        auth = Firebase.auth
         return binding.root
     }
 
@@ -102,16 +102,10 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
     }
 
-    fun capturePhoto() {
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(cameraIntent, REQUEST_CODE)
-    }
-
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.btnLogout -> {
                 areYouSure()
-
             }
             R.id.btnActualizar -> {
                 statusProgress(true, binding.fragmentProgressBar)
@@ -142,6 +136,34 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 requireActivity().goToActivity<DeleteAccountActivity>()
             }
         }
+    }
+
+    private fun showBottomSheetDialog() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_image)
+        val copy = bottomSheetDialog.findViewById<LinearLayout>(R.id.takePhoto)
+        val share = bottomSheetDialog.findViewById<LinearLayout>(R.id.uploadFromGallery)
+
+        copy!!.setOnClickListener {
+            if (isPermissionsGranted()) {
+                capturePhoto()
+                bottomSheetDialog.dismiss()
+            } else {
+                bottomSheetDialog.dismiss()
+                requestCameraPermission()
+            }
+
+        }
+        share!!.setOnClickListener {
+            fileManager()
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.show()
+    }
+
+    fun capturePhoto() {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(cameraIntent, REQUEST_CODE)
     }
 
     private fun fileManager() {
@@ -229,29 +251,6 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun showBottomSheetDialog() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_image)
-        val copy = bottomSheetDialog.findViewById<LinearLayout>(R.id.takePhoto)
-        val share = bottomSheetDialog.findViewById<LinearLayout>(R.id.uploadFromGallery)
-
-        copy!!.setOnClickListener {
-            if (isPermissionsGranted()) {
-                capturePhoto()
-                bottomSheetDialog.dismiss()
-            } else {
-                bottomSheetDialog.dismiss()
-                requestLocationPermission()
-            }
-
-        }
-        share!!.setOnClickListener {
-            fileManager()
-            bottomSheetDialog.dismiss()
-        }
-        bottomSheetDialog.show()
-    }
-
     private fun updateUI(user: User) {
         binding.userImage.loadByURL(user.imageUrl)
         binding.tieUsername.setText(user.displayName)
@@ -301,13 +300,16 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         Manifest.permission.CAMERA
     ) == PackageManager.PERMISSION_GRANTED
 
-    private fun requestLocationPermission() {
+    private fun requestCameraPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(
                 requireActivity(),
                 Manifest.permission.CAMERA
             )
         ) {
-            dialogInfo(requireContext(),"Para activar la\ncamara ve a ajustes\ny acepta los permisos")
+            dialogInfo(
+                requireContext(),
+                "Para activar la\ncamara ve a ajustes\ny acepta los permisos"
+            )
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(),
@@ -326,7 +328,10 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             CAMERA_REQUEST_CODE -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 capturePhoto()
             } else {
-                dialogInfo(requireContext(),"Para activar la\ncamara ve a ajustes\ny acepta los permisos")
+                dialogInfo(
+                    requireContext(),
+                    "Para activar la\ncamara ve a ajustes\ny acepta los permisos"
+                )
             }
         }
     }

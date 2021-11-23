@@ -1,8 +1,10 @@
 package com.aesc.proyectofinaldesarrollomovil.ui.fragments.maps
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.*
 import androidx.core.app.ActivityCompat
@@ -13,6 +15,7 @@ import com.aesc.proyectofinaldesarrollomovil.R
 import com.aesc.proyectofinaldesarrollomovil.extension.toast
 import com.aesc.proyectofinaldesarrollomovil.provider.firebase.daos.LocationDao
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogError
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogGetCurrentLocation
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogInfo
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -24,9 +27,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 
-
 class MapsFragment : Fragment(), OnMapReadyCallback,
-    GoogleMap.OnMyLocationClickListener {
+    GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
 
     companion object {
         const val LOCATION_REQUEST_CODE = 0
@@ -39,6 +41,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        location()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -89,6 +92,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
         map = gMap
         createMarker()
         map.setOnMyLocationClickListener(this)
+        map.setOnMyLocationButtonClickListener(this)
         enableMyLocation()
     }
 
@@ -114,6 +118,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
             requestLocationPermission()
         }
     }
+
 
     private fun requestLocationPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(
@@ -194,5 +199,30 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
 
         }
         bottomSheetDialog.show()
+    }
+
+    private fun location() {
+        val lm = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        var gpsEnabled = false
+        var networkEnabled = false
+
+        try {
+            gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        } catch (ex: Exception) {
+        }
+
+        try {
+            networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        } catch (ex: Exception) {
+        }
+
+        if (!gpsEnabled && !networkEnabled) {
+            dialogGetCurrentLocation(requireContext())
+        }
+    }
+
+    override fun onMyLocationButtonClick(): Boolean {
+        location()
+        return false
     }
 }
