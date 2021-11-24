@@ -34,6 +34,7 @@ class MainActivity : BaseActivity() {
         auth = Firebase.auth
 
         val navView: BottomNavigationView = binding.navView
+        supportActionBar!!.elevation = 0f
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         // Passing each menu ID as a set of Ids because each
