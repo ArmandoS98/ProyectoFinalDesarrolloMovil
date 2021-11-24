@@ -17,7 +17,10 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class LocationAdapter(options: FirestoreRecyclerOptions<Locations>, val listener: IPostAdapter) :
+class LocationAdapter(
+    val options: FirestoreRecyclerOptions<Locations>,
+    val listener: IPostAdapter
+) :
     FirestoreRecyclerAdapter<Locations, LocationAdapter.PostViewHolder>(
         options
     ) {
@@ -28,6 +31,7 @@ class LocationAdapter(options: FirestoreRecyclerOptions<Locations>, val listener
         val share: TextView = itemView.findViewById(R.id.btnShareData)
         val delete: TextView = itemView.findViewById(R.id.btnDeleteData)
         val userImage: ImageView = itemView.findViewById(R.id.userImage)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -59,15 +63,24 @@ class LocationAdapter(options: FirestoreRecyclerOptions<Locations>, val listener
         holder.userText.text = model.createdBy.displayName
         holder.userImage.loadByURL(model.createdBy.imageUrl)
         holder.createdAt.text = Utils.getTimeAgo(model.createdAt)
+        listener.onItemsSize(1)
 
         val auth = Firebase.auth
         val currentUserId = auth.currentUser!!.uid
         val isMine = model.createdBy.uid.contains(currentUserId)
         if (isMine) holder.delete.visibility = VISIBLE else holder.delete.visibility = GONE
     }
+
+    override fun getItemCount(): Int {
+        val count = options.snapshots.size
+        listener.onItemsSize(count)
+        return count
+
+    }
 }
 
 interface IPostAdapter {
     fun onShareClicked(latitude: String, longitude: String)
     fun onDeleteClicked(id: String)
+    fun onItemsSize(size: Int)
 }

@@ -41,7 +41,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        location()
+//        location()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
