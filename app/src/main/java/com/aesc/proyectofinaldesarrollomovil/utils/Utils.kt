@@ -13,8 +13,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentContainerView
 import com.aesc.proyectofinaldesarrollomovil.R
-import com.aesc.proyectofinaldesarrollomovil.extension.goToActivityF
-import com.aesc.proyectofinaldesarrollomovil.ui.activities.LoginActivity
+import com.orhanobut.logger.Logger
 
 object Utils {
     private const val SECOND_MILLIS = 1000
@@ -46,7 +45,23 @@ object Utils {
         }
     }
 
-    fun logsUtils(msg: String) = println("DEBUG --> $msg")
+    //AESC 2021-11-26 Implementacion de un nuevo metodo para genera logs
+    fun logsUtils(msg: String, id: Int = 0) {
+        when (id) {
+            //debug
+            0 -> Logger.d(msg)
+            //error
+            1 -> Logger.e(msg)
+            //warning
+            2 -> Logger.w(msg)
+            //verbose
+            3 -> Logger.v(msg)
+            //information
+            4 -> Logger.i(msg)
+            //What a Terrible Failure
+            5 -> Logger.wtf(msg)
+        }
+    }
 
     fun statusProgress(status: Boolean, progressBar: FragmentContainerView) {
         progressBar.visibility = if (status) View.VISIBLE else View.GONE

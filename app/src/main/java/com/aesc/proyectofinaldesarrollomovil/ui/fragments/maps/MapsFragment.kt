@@ -7,6 +7,7 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.aesc.proyectofinaldesarrollomovil.R
 import com.aesc.proyectofinaldesarrollomovil.extension.toast
 import com.aesc.proyectofinaldesarrollomovil.provider.firebase.daos.LocationDao
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogError
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogGetCurrentLocation
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogInfo
@@ -41,7 +43,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        location()
+//        location()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -171,8 +173,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout)
 
         val name = bottomSheetDialog.findViewById<TextInputEditText>(R.id.tieNameOfLocation)
-        val cancel = bottomSheetDialog.findViewById<MaterialButton>(R.id.btnCancel)
-        val send = bottomSheetDialog.findViewById<MaterialButton>(R.id.btnSend)
+        val cancel = bottomSheetDialog.findViewById<AppCompatButton>(R.id.btnCancel)
+        val send = bottomSheetDialog.findViewById<AppCompatButton>(R.id.btnSend)
 
         cancel!!.setOnClickListener {
             bottomSheetDialog.dismiss()
@@ -184,6 +186,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
                 locationDao = LocationDao()
                 currentLocation.let {
                     val nameLocation = name.text.toString()
+                    Utils.logsUtils(
+                        "Data:\nLatitud:${currentLocation.latitude}\nLongitud:${currentLocation.longitude}\nName:${nameLocation}",
+                        4
+                    )
                     locationDao.addLocation(
                         currentLocation.latitude,
                         currentLocation.longitude,
@@ -209,11 +215,19 @@ class MapsFragment : Fragment(), OnMapReadyCallback,
         try {
             gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
         } catch (ex: Exception) {
+            Utils.logsUtils(
+                ex.message!!,
+                1
+            )
         }
 
         try {
             networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         } catch (ex: Exception) {
+            Utils.logsUtils(
+                ex.message!!,
+                1
+            )
         }
 
         if (!gpsEnabled && !networkEnabled) {

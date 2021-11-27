@@ -142,31 +142,29 @@
                 android:layout_below="@id/confirm_login_password"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:weightSum="2">
 
-                <com.google.android.material.button.MaterialButton
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnCancel"
+                    style="@style/BtnMatterialCancelableStyle"
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="2.5dp"
+                    android:layout_weight="1"
+                    android:text="@string/cancelar" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnCreateNewAccount"
+                    style="@style/BtnMatterialStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="2.5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="1"
-                    android:backgroundTint="@android:color/holo_red_dark"
-                    android:text="@string/cancelar"
-                    android:textColor="@color/white"
-                    app:cornerRadius="15dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnCreateNewAccount"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/purple_500"
-                    android:text="@string/crear"
-                    android:textColor="@color/white"
-                    app:cornerRadius="15dp"
-                    app:strokeColor="@color/purple_500"
-                    app:strokeWidth="10dp" />
+                    android:text="@string/crear" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

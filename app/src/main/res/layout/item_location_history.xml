@@ -77,36 +77,33 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:weightSum="2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/postTitle">
 
-            <com.google.android.material.button.MaterialButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnShareData"
+                style="@style/BtnMatterialStyle"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="2.5dp"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/purple_500"
-                android:text="@string/compartir"
-                android:textColor="@color/white"
-                app:cornerRadius="15dp"
-                app:strokeColor="@color/purple_500"
-                app:strokeWidth="10dp" />
+                android:text="@string/compartir" />
 
-            <com.google.android.material.button.MaterialButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnDeleteData"
+                style="@style/BtnMatterialCancelableStyle"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginEnd="2.5dp"
                 android:layout_weight="1"
-                android:backgroundTint="@android:color/holo_red_dark"
                 android:text="@string/eliminar"
-                android:textColor="@color/white"
-                android:visibility="gone"
-                app:cornerRadius="15dp" />
+                android:visibility="gone" />
         </LinearLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -6,6 +6,8 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
@@ -18,6 +20,7 @@ import com.aesc.proyectofinaldesarrollomovil.provider.firebase.daos.LocationDao
 import com.aesc.proyectofinaldesarrollomovil.provider.firebase.models.Locations
 import com.aesc.proyectofinaldesarrollomovil.ui.adapters.IPostAdapter
 import com.aesc.proyectofinaldesarrollomovil.ui.adapters.LocationAdapter
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.*
 
@@ -51,7 +54,6 @@ class HistoryFragment : Fragment(), IPostAdapter {
         val recyclerViewOtions =
             FirestoreRecyclerOptions.Builder<Locations>().setQuery(query, Locations::class.java)
                 .build()
-
         adapter = LocationAdapter(recyclerViewOtions, this)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -68,6 +70,10 @@ class HistoryFragment : Fragment(), IPostAdapter {
     }
 
     override fun onShareClicked(latitude: String, longitude: String) {
+        Utils.logsUtils(
+            "onShareClicked:\nLatitude: $latitude\nLongitude: $longitude",
+            4
+        )
         val i = Intent(Intent.ACTION_SEND)
         i.type = "text/plain"
         i.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name)
@@ -78,7 +84,21 @@ class HistoryFragment : Fragment(), IPostAdapter {
     }
 
     override fun onDeleteClicked(id: String) {
+        Utils.logsUtils(
+            "onDeleteClicked:\nid: $id",
+            4
+        )
         dialogDeleteUbication(id)
+    }
+
+    override fun onItemsSize(size: Int) {
+//        Utils.logsUtils("Adapter Count: $size")
+        if (size > 0) {
+            //Nada
+            binding.animationView.visibility = GONE
+        } else {
+            binding.animationView.visibility = VISIBLE
+        }
     }
 
 
