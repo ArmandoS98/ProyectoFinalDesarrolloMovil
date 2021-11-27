@@ -17,6 +17,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import np.com.susanthapa.curved_bottom_navigation.CbnMenuItem
 import np.com.susanthapa.curved_bottom_navigation.CurvedBottomNavigationView
+import com.orhanobut.logger.AndroidLogAdapter
+import com.orhanobut.logger.Logger
+
 
 class MainActivity : BaseActivity() {
 
@@ -29,6 +32,8 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar!!.elevation = 0f
+        //AESC 2021-11-26 Initialize Logger
+        Logger.addLogAdapter(AndroidLogAdapter())
 
         //Firebase Auth
         auth = Firebase.auth

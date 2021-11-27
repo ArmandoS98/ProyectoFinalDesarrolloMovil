@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.LinearLayout
@@ -34,6 +33,7 @@ import com.aesc.proyectofinaldesarrollomovil.ui.activities.AboutUsActivity
 import com.aesc.proyectofinaldesarrollomovil.ui.activities.DeleteAccountActivity
 import com.aesc.proyectofinaldesarrollomovil.ui.activities.LoginActivity
 import com.aesc.proyectofinaldesarrollomovil.ui.activities.UpdatePasswordActivity
+import com.aesc.proyectofinaldesarrollomovil.utils.Utils
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils.dialogInfo
 import com.aesc.proyectofinaldesarrollomovil.utils.Utils.statusProgress
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -226,26 +226,12 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                     requireActivity().toast("ERROR $it.")
                     statusProgress(false, binding.fragmentProgressBar)
                 })
-//                updateUI()
-
-
-                /*  val profileUpdates = userProfileChangeRequest {
-                      photoUri = Uri.parse(uri.toString())
-                  }
-
-                  user.updateProfile(profileUpdates)
-                      .addOnCompleteListener { task ->
-                          if (task.isSuccessful) {
-                              Toast.makeText(
-                                  requireContext(), "Se realizaron los cambios correctamente.",
-                                  Toast.LENGTH_SHORT
-                              ).show()
-                              updateUI()
-                          }
-                      }*/
             }
         }.addOnFailureListener {
-            Log.i("TAG", "file upload error")
+            Utils.logsUtils(
+                "file upload error -> ${it.message!!}",
+                1
+            )
             requireActivity().toast("file upload error")
             statusProgress(false, binding.fragmentProgressBar)
         }

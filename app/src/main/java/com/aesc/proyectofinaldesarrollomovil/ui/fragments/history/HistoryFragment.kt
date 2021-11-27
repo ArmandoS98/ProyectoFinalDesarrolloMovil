@@ -57,7 +57,6 @@ class HistoryFragment : Fragment(), IPostAdapter {
         adapter = LocationAdapter(recyclerViewOtions, this)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
     }
 
     override fun onStart() {
@@ -71,6 +70,10 @@ class HistoryFragment : Fragment(), IPostAdapter {
     }
 
     override fun onShareClicked(latitude: String, longitude: String) {
+        Utils.logsUtils(
+            "onShareClicked:\nLatitude: $latitude\nLongitude: $longitude",
+            4
+        )
         val i = Intent(Intent.ACTION_SEND)
         i.type = "text/plain"
         i.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name)
@@ -81,11 +84,15 @@ class HistoryFragment : Fragment(), IPostAdapter {
     }
 
     override fun onDeleteClicked(id: String) {
+        Utils.logsUtils(
+            "onDeleteClicked:\nid: $id",
+            4
+        )
         dialogDeleteUbication(id)
     }
 
     override fun onItemsSize(size: Int) {
-        Utils.logsUtils("Adapter Count: $size")
+//        Utils.logsUtils("Adapter Count: $size")
         if (size > 0) {
             //Nada
             binding.animationView.visibility = GONE

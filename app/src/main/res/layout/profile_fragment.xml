@@ -98,32 +98,33 @@
             android:layout_below="@id/tilUserName"
             android:layout_marginTop="20dp"
             android:orientation="horizontal"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:weightSum="2">
 
-            <com.google.android.material.button.MaterialButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnLogout"
+                style="@style/BtnMatterialCancelableStyle"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="2.5dp"
+                android:layout_weight="1"
+                android:text="@string/logout" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnActualizar"
+                style="@style/BtnMatterialStyle"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="2.5dp"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                android:backgroundTint="@android:color/holo_red_dark"
-                android:text="@string/logout"
-                android:textColor="@color/white"
-                app:cornerRadius="15dp" />
+                android:text="@string/actualizar" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnActualizar"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/purple_500"
-                android:text="@string/actualizar"
-                android:textColor="@color/white"
-                app:cornerRadius="15dp"
-                app:strokeColor="@color/purple_500"
-                app:strokeWidth="10dp" />
+
         </LinearLayout>
+
     </RelativeLayout>
 
 

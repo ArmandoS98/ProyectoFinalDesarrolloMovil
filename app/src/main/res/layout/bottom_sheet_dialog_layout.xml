@@ -54,36 +54,32 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/outlinedTextField"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="70dp"
+            android:layout_below="@id/outlinedTextField"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:weightSum="2">
 
-            <com.google.android.material.button.MaterialButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnCancel"
+                style="@style/BtnMatterialCancelableStyle"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="2.5dp"
                 android:layout_weight="1"
-                android:backgroundTint="@android:color/holo_red_light"
-                android:text="@string/cancelar"
-                app:cornerRadius="15dp"
-                android:textColor="@color/white" />
+                android:text="@string/cancelar" />
 
-            <com.google.android.material.button.MaterialButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSend"
+                style="@style/BtnMatterialStyle"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="2.5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
-                app:cornerRadius="15dp"
-                android:backgroundTint="@color/purple_500"
-                android:text="@string/enviar"
-                android:textColor="@color/white" />
+                android:text="@string/enviar" />
         </LinearLayout>
     </RelativeLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
